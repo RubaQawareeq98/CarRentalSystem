@@ -1,22 +1,16 @@
+using CarRentalSystem.Api.Models.Authentication;
+using CarRentalSystem.Api.Validators;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 
-
-namespace RestaurantReservation.API.ServiceRegistration;
+namespace CarRentalSystem.Api.ServiceRegistration;
 
 public static class AddValidators
 {
     public static void RegisterValidators(this IServiceCollection services)
     {
-        // services.AddFluentValidationAutoValidation();
-        //
-        // services.AddScoped<IValidator<SignupRequestBodyDto>, SignupRequestValidator>();
-        // services.AddScoped<IValidator<LoginRequestBodyDto>, LoginRequestValidator>();
-        // services.AddScoped<IValidator<CustomerRequestBodyDto>, CustomerRequestValidator>();
-        // services.AddScoped<IValidator<EmployeeRequestBodyDto>, EmployeeRequestValidator>();
-        // services.AddScoped<IValidator<OrderRequestBodyDto>, OrderRequestValidator>();
-        // services.AddScoped<IValidator<PaymentDetailDto>, PaymentDetailsRequestValidator>();
-        // services.AddScoped<IValidator<ReservationRequestDto>, ReservationRequestValidator>();
-        // services.AddScoped<IValidator<RestaurantRequestBodyDto>, RestaurantRequestValidator>();
-        // services.AddScoped<IValidator<TableRequestBodyDto>, TableRequestValidator>();
-       
+        services.AddFluentValidationAutoValidation();
+        
+        services.AddScoped<IValidator<SignupRequestBodyDto>, SignupRequestBodyValidator>();
     }
 }

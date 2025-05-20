@@ -9,6 +9,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.RegisterServices();
 builder.Services.AddControllers();
 builder.RegisterJwtParams();
+builder.Services.RegisterMappers();
+builder.Services.RegisterValidators();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
