@@ -8,10 +8,15 @@
 
     <ItemGroup>
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.1"/>
+        <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.10.0" />
     </ItemGroup>
 
     <ItemGroup>
       <Folder Include="Controllers\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\CarRentalSystem.Db\CarRentalSystem.Db.csproj" />
     </ItemGroup>
 
 </Project>

@@ -13,6 +13,17 @@ public class UserRepository (CarRentalSystemDbContext context) : IUserRepository
 
     }
 
+    public async Task<User?> FindUserByCredentials(string? email, string? password)
+    {
+        if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
+        {
+            return null;
+        }
+        var user = await context.Users
+            .FirstOrDefaultAsync(u => u.Email == email && u.Password == password);
+        return user;
+    }
+
     public async Task AddUserAsync(User user)
     {
         await context.Users.AddAsync(user);
