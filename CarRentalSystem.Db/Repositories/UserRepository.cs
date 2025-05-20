@@ -12,20 +12,29 @@ public class UserRepository (CarRentalSystemDbContext context) : IUserRepository
             .FirstOrDefaultAsync(u => u.Email == email);
 
     }
-
+    
     public async Task<User?> FindUserByCredentials(string? email, string? password)
     {
         if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
         {
             return null;
         }
-        var user = await context.Users
-            .FirstOrDefaultAsync(u => u.Email == email && u.Password == password);
-        return user;
+
+        var user = await FindUserByEmailAsync(email);
+        if (user is null)
+        {
+            return null;
+        }
+
+        var isPasswordValid = BCrypt.Net.BCrypt.Verify(password, user.Password);
+
+        return isPasswordValid ? user : null;
     }
+
 
     public async Task AddUserAsync(User user)
     {
+        user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password);
         await context.Users.AddAsync(user);
         await context.SaveChangesAsync();
     }
