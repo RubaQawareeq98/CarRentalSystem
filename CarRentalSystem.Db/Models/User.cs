@@ -17,4 +17,5 @@ public class User
     public string Country { get; set; } = string.Empty;
     public string DriverLicenseNumber { get; set; } = string.Empty;
     public UserRole Role { get; set; }
+    public virtual List<Reservation>? Reservations { get; set; }
 }
