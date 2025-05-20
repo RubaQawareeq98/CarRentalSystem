@@ -8,4 +8,5 @@ public class Car
     public string Color { get; set; } = string.Empty;
     public decimal Price { get; set; }
     public bool IsAvailable { get; set; }
+    public virtual List<Reservation>? Reservations { get; set; }
 }

@@ -7,6 +7,6 @@ public class Reservation
     public Car? Car { get; set; }
     public DateTime StartDate { get; set; }
     public DateTime EndDate { get; set; }
-    public long UserId { get; set; }
+    public Guid UserId { get; set; }
     public User? User { get; set; }
 }
