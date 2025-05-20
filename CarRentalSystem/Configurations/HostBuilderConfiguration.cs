@@ -1,4 +1,4 @@
-using CarRentalSystem.Db.Contexts;
+using CarRentalSystem.Db;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
