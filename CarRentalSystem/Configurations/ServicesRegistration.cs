@@ -1,4 +1,4 @@
-using CarRentalSystem.Db.Contexts;
+using CarRentalSystem.Db;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace CarRentalSystem.Configurations;
