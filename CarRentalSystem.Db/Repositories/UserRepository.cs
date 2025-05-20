@@ -12,7 +12,13 @@ public class UserRepository (CarRentalSystemDbContext context) : IUserRepository
             .FirstOrDefaultAsync(u => u.Email == email);
 
     }
-    
+
+    public async Task<User?> FindUserByIdAsync(Guid userId)
+    {
+        return await context.Users
+            .FirstOrDefaultAsync(u => u.Id == userId);
+    }
+
     public async Task<User?> FindUserByCredentials(string? email, string? password)
     {
         if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
@@ -41,6 +47,7 @@ public class UserRepository (CarRentalSystemDbContext context) : IUserRepository
 
     public async Task UpdateUserAsync(User user)
     {
+        user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password);
         context.Users.Update(user);
         await context.SaveChangesAsync();
     }

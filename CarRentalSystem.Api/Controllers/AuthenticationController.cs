@@ -52,6 +52,6 @@ public class AuthenticationController(
         var user = mapper.ToUser(request);
         await userRepository.AddUserAsync(user);
 
-        return Ok("User Created Successfully");
+        return Ok("Users Created Successfully");
     }
 }

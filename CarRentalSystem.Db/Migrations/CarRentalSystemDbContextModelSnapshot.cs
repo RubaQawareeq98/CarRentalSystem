@@ -81,7 +81,7 @@ namespace CarRentalSystem.Db.Migrations
                     b.ToTable("Reservations");
                 });
 
-            modelBuilder.Entity("CarRentalSystem.Db.Models.User", b =>
+            modelBuilder.Entity("CarRentalSystem.Db.Models.Users", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -155,7 +155,7 @@ namespace CarRentalSystem.Db.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("CarRentalSystem.Db.Models.User", "User")
+                    b.HasOne("CarRentalSystem.Db.Models.Users", "Users")
                         .WithMany("Reservations")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -163,7 +163,7 @@ namespace CarRentalSystem.Db.Migrations
 
                     b.Navigation("Car");
 
-                    b.Navigation("User");
+                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("CarRentalSystem.Db.Models.Car", b =>
@@ -171,7 +171,7 @@ namespace CarRentalSystem.Db.Migrations
                     b.Navigation("Reservations");
                 });
 
-            modelBuilder.Entity("CarRentalSystem.Db.Models.User", b =>
+            modelBuilder.Entity("CarRentalSystem.Db.Models.Users", b =>
                 {
                     b.Navigation("Reservations");
                 });
