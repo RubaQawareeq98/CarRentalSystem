@@ -4,6 +4,7 @@ using CarRentalSystem.Db;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CarRentalSystem.Db.Migrations
 {
     [DbContext(typeof(CarRentalSystemDbContext))]
-    partial class CarRentalSystemDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250521101652_updateCarModel")]
+    partial class updateCarModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -86,7 +89,7 @@ namespace CarRentalSystem.Db.Migrations
                     b.ToTable("Reservations");
                 });
 
-            modelBuilder.Entity("CarRentalSystem.Db.Models.Users", b =>
+            modelBuilder.Entity("CarRentalSystem.Db.Models.User", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -160,7 +163,7 @@ namespace CarRentalSystem.Db.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("CarRentalSystem.Db.Models.Users", "Users")
+                    b.HasOne("CarRentalSystem.Db.Models.User", "User")
                         .WithMany("Reservations")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -168,7 +171,7 @@ namespace CarRentalSystem.Db.Migrations
 
                     b.Navigation("Car");
 
-                    b.Navigation("Users");
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("CarRentalSystem.Db.Models.Car", b =>
@@ -176,7 +179,7 @@ namespace CarRentalSystem.Db.Migrations
                     b.Navigation("Reservations");
                 });
 
-            modelBuilder.Entity("CarRentalSystem.Db.Models.Users", b =>
+            modelBuilder.Entity("CarRentalSystem.Db.Models.User", b =>
                 {
                     b.Navigation("Reservations");
                 });
