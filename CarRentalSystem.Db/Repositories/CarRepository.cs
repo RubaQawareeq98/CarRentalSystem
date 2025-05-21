@@ -12,6 +12,19 @@ public class CarRepository(CarRentalSystemDbContext context) : ICarRepository
             .ToListAsync();
     }
 
+    public async Task<List<Car>> GetAvailableCarsAsync()
+    {
+        var today = DateTime.Today;
+
+        var availableCars = await context.Cars
+            .Where(c => c.Reservations != null && !c.Reservations.Any(r =>
+                today >= r.StartDate && today <= r.EndDate
+            ))
+            .ToListAsync();
+
+        return availableCars;
+    }
+
     public async Task<List<Car>> GetFilteredCarsAsync(CarSearchDto carSearchDto)
     {
         var query = context.Cars.AsQueryable();
@@ -30,12 +43,25 @@ public class CarRepository(CarRentalSystemDbContext context) : ICarRepository
 
         if (carSearchDto.MaxPrice.HasValue)
             query = query.Where(c => c.Price <= carSearchDto.MaxPrice.Value);
+        
+        if (!string.IsNullOrEmpty(carSearchDto.Color))
+            query = query.Where(c => c.Color == carSearchDto.Color);
 
         if (carSearchDto.MinYear.HasValue)
             query = query.Where(c => c.Year >= carSearchDto.MinYear.Value);
 
         if (carSearchDto.MaxYear.HasValue)
             query = query.Where(c => c.Year <= carSearchDto.MaxYear.Value);
+        
+        if (carSearchDto is { StartDate: not null, EndDate: not null })
+        {
+            var startDate = carSearchDto.StartDate.Value.Date;
+            var endDate = carSearchDto.EndDate.Value.Date;
+
+            query = query.Where(c => c.Reservations != null && !c.Reservations.Any(r =>
+                (startDate <= r.EndDate && endDate >= r.StartDate)
+            ));
+        }
 
         query = query.Where(c => c.IsAvailable);
 
