@@ -6,13 +6,15 @@ namespace CarRentalSystem.Db.Repositories;
 
 public class CarRepository(CarRentalSystemDbContext context) : ICarRepository
 {
-    public async Task<List<Car>> GetCarsAsync()
+    public async Task<List<Car>> GetCarsAsync(int pageNumber, int pageSize)
     {
         return await context.Cars
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
             .ToListAsync();
     }
 
-    public async Task<List<Car>> GetAvailableCarsAsync()
+    public async Task<List<Car>> GetAvailableCarsAsync(int pageNumber, int pageSize)
     {
         var today = DateTime.Today;
 
@@ -20,6 +22,8 @@ public class CarRepository(CarRentalSystemDbContext context) : ICarRepository
             .Where(c => c.Reservations != null && !c.Reservations.Any(r =>
                 today >= r.StartDate && today <= r.EndDate
             ))
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
             .ToListAsync();
 
         return availableCars;
