@@ -5,7 +5,7 @@ namespace CarRentalSystem.Db;
 
 public class CarRentalSystemDbContext (DbContextOptions<CarRentalSystemDbContext> options) : DbContext(options)
 {
-    DbSet<Car> Cars { get; set; }
+    public DbSet<Car> Cars { get; set; }
     public DbSet<User> Users { get; set; }
     DbSet<Reservation> Reservations { get; set; }
 
