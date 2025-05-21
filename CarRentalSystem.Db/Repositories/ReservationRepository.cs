@@ -18,7 +18,7 @@ public class ReservationRepository(CarRentalSystemDbContext context) : IReservat
         await context.SaveChangesAsync();
     }
 
-    public async Task<List<Reservation>> GetCustomerReservationsAsync(Guid userId, int pageNumber, int pageSize)
+    public async Task<List<Reservation>> GetUserReservationsAsync(Guid userId, int pageNumber, int pageSize)
     {
         return await context.Reservations
             .Where(r => r.UserId == userId)

@@ -8,4 +8,5 @@ namespace CarRentalSystem.Api.Mappers.Reservations;
 public partial class AddReservationMapper
 {
     public partial Reservation ToReservation(AddReservationBodyDto addReservationDto);
+    public partial List<ReservationResponseDto> ToReservationResponseDtos(List<Reservation> reservations);
 }
