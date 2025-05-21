@@ -14,5 +14,6 @@ public static class AddServices
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IJwtTokenGeneratorService, JwtTokenGeneratorService>();
         services.AddScoped<ICarRepository, CarRepository>();
+        services.AddScoped<IReservationRepository, ReservationRepository>();
     }
 }
