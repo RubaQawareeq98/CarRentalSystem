@@ -12,14 +12,7 @@ public static class AddServices
     {
         services.AddDbContext<CarRentalSystemDbContext>();
         services.AddScoped<IUserRepository, UserRepository>();
-        // services.AddScoped<IEmployeeRepository, EmployeeRepository>();
-        // services.AddScoped<IReservationRepository, ReservationRepository>();
-        // services.AddScoped<IOrderRepository, OrderRepository>();
-        // services.AddScoped<IOrderItemRepository, OrderItemRepository>();
-        // services.AddScoped<IMenuItemRepository, MenuItemRepository>();
-        // services.AddScoped<IRestaurantRepository, RestaurantRepository>();
-        // services.AddScoped<ITableRepository, TableRepository>();
         services.AddScoped<IJwtTokenGeneratorService, JwtTokenGeneratorService>();
-        // services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<ICarRepository, CarRepository>();
     }
 }
