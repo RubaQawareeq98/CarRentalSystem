@@ -7,7 +7,7 @@ public class CarRentalSystemDbContext (DbContextOptions<CarRentalSystemDbContext
 {
     public DbSet<Car> Cars { get; set; }
     public DbSet<User> Users { get; set; }
-    DbSet<Reservation> Reservations { get; set; }
+    public DbSet<Reservation> Reservations { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
