@@ -18,10 +18,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Controllers\" />
-    </ItemGroup>
-
-    <ItemGroup>
       <ProjectReference Include="..\CarRentalSystem.Db\CarRentalSystem.Db.csproj" />
     </ItemGroup>
 
