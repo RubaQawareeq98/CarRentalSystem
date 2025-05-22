@@ -1,3 +1,4 @@
+using CarRentalSystem.Api.Middlewares;
 using CarRentalSystem.Api.ServiceRegistration;
 using CarRentalSystem.Db;
 using Microsoft.EntityFrameworkCore;
@@ -32,4 +33,5 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.Run();
