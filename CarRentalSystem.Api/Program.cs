@@ -10,6 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.RegisterServices();
 builder.Services.AddControllers();
 builder.RegisterJwtParams();
+builder.RegisterBrevoOptions();
 builder.Services.RegisterMappers();
 builder.Services.RegisterValidators();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
@@ -34,4 +35,4 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.UseMiddleware<ExceptionHandlingMiddleware>();
-app.Run();
+await app.RunAsync();

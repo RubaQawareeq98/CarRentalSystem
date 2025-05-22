@@ -15,5 +15,7 @@ public static class AddServices
         services.AddScoped<IJwtTokenGeneratorService, JwtTokenGeneratorService>();
         services.AddScoped<ICarRepository, CarRepository>();
         services.AddScoped<IReservationRepository, ReservationRepository>();
+        services.AddScoped<IEmailMessageService, EmailMessageService>();
+        services.AddScoped<IEmailService, EmailService>();
     }
 }
