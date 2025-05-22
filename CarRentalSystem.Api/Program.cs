@@ -13,6 +13,7 @@ builder.RegisterJwtParams();
 builder.RegisterBrevoOptions();
 builder.Services.RegisterMappers();
 builder.Services.RegisterValidators();
+
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 

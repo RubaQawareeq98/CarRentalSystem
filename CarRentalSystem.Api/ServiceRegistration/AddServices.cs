@@ -17,5 +17,7 @@ public static class AddServices
         services.AddScoped<IReservationRepository, ReservationRepository>();
         services.AddScoped<IEmailMessageService, EmailMessageService>();
         services.AddScoped<IEmailService, EmailService>();
+        services.AddScoped<IResetTokenService, ResetTokenService>();
+        services.AddScoped<IResetTokenRepository, ResetTokenRepository>();
     }
 }

@@ -8,6 +8,7 @@ public class CarRentalSystemDbContext (DbContextOptions<CarRentalSystemDbContext
     public DbSet<Car> Cars { get; set; }
     public DbSet<User> Users { get; set; }
     public DbSet<Reservation> Reservations { get; set; }
+    public DbSet<PasswordResetToken?> PasswordResetTokens { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
