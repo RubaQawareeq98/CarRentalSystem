@@ -4,9 +4,8 @@ namespace CarRentalSystem.Api.Services;
 
 public class EmailMessageService : IEmailMessageService
 {
-    public string GenerateResetPasswordEmail(string userEmail)
+    public string GenerateResetPasswordEmail(string userEmail, string resetLink)
     {
-        const string resetLink = "https://localhost:5001/ResetPassword";
         return $"""
                     <h3>Password Reset Request</h3>
                     <p>Hi,</p>

@@ -8,12 +8,12 @@ using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pag
 
 namespace CarRentalSystem.Api.Controllers
 {
-    [Route("api/reset-password")]
+    [Route("api/")]
     [ApiController]
     public class ResetPasswordController(IEmailService emailService, IUserRepository userRepository) : ControllerBase
     {
 
-        [HttpPost]
+        [HttpPost("forgot-password")]
         public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDto resetPasswordDto)
         {
             var user = await userRepository.FindUserByEmailAsync(resetPasswordDto.Email);
@@ -23,7 +23,7 @@ namespace CarRentalSystem.Api.Controllers
             }
             
             await emailService.SendResetPasswordEmail(user);
-            return Ok();
+            return Ok("Password reset link has been sent");
         }
     }
 }

@@ -10,9 +10,11 @@ namespace CarRentalSystem.Api.Services;
 
 public class EmailService(ILogger<EmailService> logger,
     IOptions<BrevoSettings> options,
+    IOptions<ClientConfigurations> clientConfigurations,
     IEmailMessageService emailMessageService) : IEmailService
 {
     private readonly BrevoSettings _brevoSettings = options.Value;
+    private readonly ClientConfigurations _clientConfigurations = clientConfigurations.Value;
     
     public async Task SendResetPasswordEmail(User user)
     {
@@ -20,7 +22,7 @@ public class EmailService(ILogger<EmailService> logger,
         logger.LogInformation(_brevoSettings.ApiKey);
         brevo_csharp.Client.Configuration.Default.AddApiKey("api-key", _brevoSettings.ApiKey);
 
-        var htmlContent =  emailMessageService.GenerateResetPasswordEmail(user.Email);
+        var htmlContent =  emailMessageService.GenerateResetPasswordEmail(user.Email, _clientConfigurations.ClientUrl);
 
         var apiInstance = new TransactionalEmailsApi();
         var sender = new SendSmtpEmailSender(_brevoSettings.SenderName, _brevoSettings.SenderEmail);
@@ -30,8 +32,7 @@ public class EmailService(ILogger<EmailService> logger,
         try
         {
             var sendSmtpEmail = new SendSmtpEmail(sender, to, null, null, htmlContent, null, "Reset Password.");
-            logger.LogInformation("Sending email to reset password");
-
+            
             await apiInstance.SendTransacEmailAsync(sendSmtpEmail);
 
             logger.LogDebug("Email sent to reset password");
