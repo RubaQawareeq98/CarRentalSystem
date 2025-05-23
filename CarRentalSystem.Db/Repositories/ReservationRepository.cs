@@ -26,4 +26,9 @@ public class ReservationRepository(CarRentalSystemDbContext context) : IReservat
             .Take(pageSize)
             .ToListAsync();
     }
+
+    public async Task<List<Reservation>> GetAllReservationsAsync()
+    {
+        return await context.Reservations.ToListAsync();
+    }
 }

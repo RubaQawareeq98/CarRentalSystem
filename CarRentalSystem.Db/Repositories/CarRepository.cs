@@ -83,4 +83,21 @@ public class CarRepository(CarRentalSystemDbContext context) : ICarRepository
             .FirstOrDefaultAsync();
         return car is null;
     }
+
+    public async Task AddCarAsync(Car car)
+    {
+        await context.Cars.AddAsync(car);
+        await context.SaveChangesAsync();
+    }
+
+    public async Task UpdateCarAsync(Car car)
+    {
+        context.Cars.Update(car);
+        await context.SaveChangesAsync();
+    }
+
+    public async Task<bool> IsCarExist(Guid carId)
+    {
+        return await context.Cars.AnyAsync(c => c.Id == carId);
+    }
 }

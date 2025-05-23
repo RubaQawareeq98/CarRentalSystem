@@ -2,6 +2,7 @@ using CarRentalSystem.Api.Mappers.Reservations;
 using CarRentalSystem.Api.Models.Reservations;
 using CarRentalSystem.Db.Models;
 using CarRentalSystem.Db.Repositories.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CarRentalSystem.Api.Controllers;
@@ -41,6 +42,15 @@ public class ReservationController(IReservationRepository reservationRepository,
         _maxPageSize = Math.Min(_maxPageSize, pageSize);
         var reservations = await reservationRepository.GetUserReservationsAsync(userId, pageNumber, pageSize);
         
+        var reservationsResponse = mapper.ToReservationResponseDtos(reservations);
+        return Ok(reservationsResponse);
+    }
+    
+    [Authorize(Roles = "Admin")]
+    [HttpGet]
+    public async Task<ActionResult<List<ReservationResponseDto>>> GetAllReservations()
+    {
+        var reservations = await reservationRepository.GetAllReservationsAsync();
         var reservationsResponse = mapper.ToReservationResponseDtos(reservations);
         return Ok(reservationsResponse);
     }

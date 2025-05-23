@@ -1,5 +1,6 @@
 using CarRentalSystem.Api.Mappers.Users;
 using CarRentalSystem.Api.Models.Profile;
+using CarRentalSystem.Api.Models.Users;
 using CarRentalSystem.Db.Models;
 using CarRentalSystem.Db.Repositories.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -7,11 +8,13 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CarRentalSystem.Api.Controllers;
 
-[Route("api/profile")]
+[Route("api/users")]
 [ApiController]
-public class UserController(IUserRepository userRepository, UserProfileMapper mapper) : ControllerBase
+public class UserController(IUserRepository userRepository,
+    UserProfileMapper mapper,
+    UserResponseMapper userResponseMapper) : ControllerBase
 {
-    [HttpGet("{userId}")]
+    [HttpGet("profile/{userId}")]
     [Authorize]
     public async Task<ActionResult<User>> GetUser(Guid userId)
     {
@@ -38,5 +41,14 @@ public class UserController(IUserRepository userRepository, UserProfileMapper ma
         
         await userRepository.UpdateUserAsync(user);
         return Ok("Date updated successfully");
+    }
+    
+    [Authorize(Roles = "Admin")]
+    [HttpGet]
+    public async Task<ActionResult<List<UserResponseDto>>> GetAllUsers()
+    {
+        var users = await userRepository.GetAllUsersAsync();
+        var usersResponse = userResponseMapper.ToUserResponseDtos(users);
+        return Ok(usersResponse);
     }
 }

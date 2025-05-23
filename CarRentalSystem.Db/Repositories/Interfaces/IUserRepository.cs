@@ -9,5 +9,6 @@ public interface IUserRepository
     Task<User?> FindUserByCredentials(string? email, string? password);
     Task AddUserAsync(User user);
     Task UpdateUserAsync(User user);
+    Task<List<User>> GetAllUsersAsync();
     Task<bool> IsEntityExist(Guid id);
 }

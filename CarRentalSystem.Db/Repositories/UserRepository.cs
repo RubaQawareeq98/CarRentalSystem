@@ -51,7 +51,12 @@ public class UserRepository (CarRentalSystemDbContext context) : IUserRepository
         context.Users.Update(user);
         await context.SaveChangesAsync();
     }
-    
+
+    public async Task<List<User>> GetAllUsersAsync()
+    {
+        return await context.Users.ToListAsync();
+    }
+
     public async Task<bool> IsEntityExist(Guid id)
     {
         return await context.Users.AnyAsync(u => u.Id == id);

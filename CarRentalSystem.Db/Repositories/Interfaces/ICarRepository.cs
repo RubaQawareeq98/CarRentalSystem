@@ -8,4 +8,7 @@ public interface ICarRepository
     Task<List<Car>> GetAvailableCarsAsync(int pageNumber, int pageSize);
     Task<List<Car>> GetFilteredCarsAsync(CarSearchDto carSearchDto);
     Task<bool> IsCarAvailable(Guid carId, DateTime startDate, DateTime endDate);
+    Task AddCarAsync(Car car);
+    Task UpdateCarAsync(Car car);
+    Task<bool> IsCarExist(Guid carId);
 }
