@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CarRentalSystem.Api.Controllers;
 
+[Authorize]
 [Route("api/users")]
 [ApiController]
 public class UserController(IUserRepository userRepository,
@@ -15,7 +16,6 @@ public class UserController(IUserRepository userRepository,
     UserResponseMapper userResponseMapper) : ControllerBase
 {
     [HttpGet("profile/{userId}")]
-    [Authorize]
     public async Task<ActionResult<User>> GetUser(Guid userId)
     {
         var user = await userRepository.FindUserByIdAsync(userId);
@@ -29,7 +29,6 @@ public class UserController(IUserRepository userRepository,
     }
 
     [HttpPut("{userId}")]
-    [Authorize]
     public async Task<ActionResult> UpdateProfile(Guid userId, UpdateProfileBodyDto bodyDto)
     {
         var user = await userRepository.FindUserByIdAsync(userId);

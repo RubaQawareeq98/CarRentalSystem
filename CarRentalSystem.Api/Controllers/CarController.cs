@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CarRentalSystem.Api.Controllers;
 
+[Authorize]
 [Route("api/cars")]
 [ApiController]
 public class CarController(ICarRepository carRepository,

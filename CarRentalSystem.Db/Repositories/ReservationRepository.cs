@@ -6,29 +6,34 @@ namespace CarRentalSystem.Db.Repositories;
 
 public class ReservationRepository(CarRentalSystemDbContext context) : IReservationRepository
 {
-    public async Task AddReservationAsync(Reservation reservation)
+    public async Task AddReservationAsync(Reservation? reservation)
     {
         await context.Reservations.AddAsync(reservation);
         await context.SaveChangesAsync();
     }
 
-    public async Task UpdateReservationAsync(Reservation reservation)
+    public async Task UpdateReservationAsync(Reservation? reservation)
     {
         context.Reservations.Update(reservation);
         await context.SaveChangesAsync();
     }
 
-    public async Task<List<Reservation>> GetUserReservationsAsync(Guid userId, int pageNumber, int pageSize)
+    public async Task<List<Reservation?>> GetUserReservationsAsync(Guid userId, int pageNumber, int pageSize)
     {
         return await context.Reservations
-            .Where(r => r.UserId == userId)
+            .Where(r => r != null && r.UserId == userId)
             .Skip((pageNumber - 1) * pageSize)
             .Take(pageSize)
             .ToListAsync();
     }
 
-    public async Task<List<Reservation>> GetAllReservationsAsync()
+    public async Task<List<Reservation?>> GetAllReservationsAsync()
     {
         return await context.Reservations.ToListAsync();
+    }
+
+    public async Task<Reservation?> GetReservationByIdAsync(Guid id)
+    {
+        return await context.Reservations.FirstOrDefaultAsync(r => r != null && r.Id == id);
     }
 }

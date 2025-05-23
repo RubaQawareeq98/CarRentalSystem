@@ -7,11 +7,14 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CarRentalSystem.Api.Controllers;
 
+[Authorize]
 [Route("api/reservations")]
 [ApiController]
 public class ReservationController(IReservationRepository reservationRepository,
     ICarRepository carRepository,
-    AddReservationMapper mapper) : ControllerBase
+    AddReservationMapper mapper,
+    UpdateReservationMapper updateReservationMapper,
+    ILogger<ReservationController> logger) : ControllerBase
 {
     private int _maxPageSize;
 
@@ -44,6 +47,22 @@ public class ReservationController(IReservationRepository reservationRepository,
         
         var reservationsResponse = mapper.ToReservationResponseDtos(reservations);
         return Ok(reservationsResponse);
+    }
+
+    [HttpPut("reservation/{reservationId}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult> UpdateReservation(Guid reservationId, UpdateReservationDto updateReservationDto )
+    {
+        var reservation = await reservationRepository.GetReservationByIdAsync(reservationId);
+        if (reservation is null)
+        {
+            return NotFound("Reservation not found");
+        }
+        updateReservationMapper.UpdateReservation(updateReservationDto, reservation);
+        logger.LogInformation(reservation.Id+" "+reservation.StartDate+"  "+ reservation.EndDate);
+        await reservationRepository.UpdateReservationAsync(reservation);
+        return NoContent();
     }
     
     [Authorize(Roles = "Admin")]

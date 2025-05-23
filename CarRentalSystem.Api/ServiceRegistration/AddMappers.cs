@@ -14,6 +14,7 @@ public static class AddMappers
         services.AddSingleton<CarResponseMapper>();     
         services.AddSingleton<UserResponseMapper>();     
         services.AddSingleton<AddReservationMapper>();     
-        
+        services.AddSingleton<CarRequestMapper>();     
+        services.AddSingleton<UpdateReservationMapper>();     
     }
 }
