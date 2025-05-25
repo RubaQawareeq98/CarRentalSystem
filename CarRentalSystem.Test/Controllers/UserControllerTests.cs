@@ -24,12 +24,12 @@ public class UserControllerTests : IClassFixture<SqlServerFixture>
     private const string BaseUrl = "/api/users";
     private readonly IFixture _fixture = new Fixture();
 
-    public UserControllerTests(SqlServerFixture fixture)
+    public UserControllerTests(SqlServerFixture sqlServerFixture)
     {
         _fixture.Behaviors.Remove(new ThrowingRecursionBehavior());
         _fixture.Behaviors.Add(new OmitOnRecursionBehavior());
         
-        _factory = fixture.Factory;
+        _factory = sqlServerFixture.Factory;
         _client = _factory.WithWebHostBuilder(builder =>
         {
             builder.ConfigureTestServices(services =>
@@ -39,6 +39,8 @@ public class UserControllerTests : IClassFixture<SqlServerFixture>
                         "TestAuthScheme", _ => { });
             });
         }).CreateClient();
+        
+        sqlServerFixture.ClearDatabaseAsync().Wait();
     }
 
     [Fact]
@@ -99,12 +101,14 @@ public class UserControllerTests : IClassFixture<SqlServerFixture>
         var user = _fixture.Build<User>()
             .Without(u => u.Reservations)
             .Create();
+        const string updatedCountry = "Palestine";
         
         await UserRepo.CreateTestUser(user, _factory);
         
         var updateDto = _fixture.Build<UpdateProfileBodyDto>()
-            .With(x => x.Country, "Palestine")
+            .With(x => x.Country, updatedCountry)
             .Create();
+        
         AuthenticationHeader.SetTestAuthHeader(_client, user.Id, UserRole.Customer);
         
         // Act
@@ -117,9 +121,9 @@ public class UserControllerTests : IClassFixture<SqlServerFixture>
         var updatedUser = await getResponse.Content.ReadFromJsonAsync<ProfileResponseDto>();
         
         updatedUser.Should().NotBeNull();
-        updatedUser.FirstName.Should().Be(user.FirstName);
-        updatedUser.LastName.Should().Be(user.LastName);
-        updatedUser.Country.Should().Be(user.Country);
+        updatedUser.FirstName.Should().Be(updateDto.FirstName);
+        updatedUser.LastName.Should().Be(updateDto.LastName);
+        updatedUser.Country.Should().Be(updatedCountry);
     }
     
     [Fact]
@@ -146,7 +150,6 @@ public class UserControllerTests : IClassFixture<SqlServerFixture>
         var responseContent = await response.Content.ReadFromJsonAsync<List<UserResponseDto>>();
         responseContent.Should().NotBeNull();
         responseContent.Should().HaveCount(users.Count);
-        
     }
 
     [Fact]
