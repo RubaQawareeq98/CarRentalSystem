@@ -40,7 +40,6 @@ public class UserRepository (CarRentalSystemDbContext context) : IUserRepository
 
     public async Task AddUserAsync(User user)
     {
-        user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password);
         await context.Users.AddAsync(user);
         await context.SaveChangesAsync();
     }
