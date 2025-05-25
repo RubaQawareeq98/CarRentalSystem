@@ -48,9 +48,9 @@ public class UserControllerTests : IClassFixture<SqlServerFixture>
     {
         // Arrange
         var user = _fixture.Create<User>();
-        AuthenticationHeader.SetTestAuthHeader(_client, user.Id, UserRole.Customer);
+        TestAuthenticationHeader.SetTestAuthHeader(_client, user.Id, UserRole.Customer);
         
-        await UserRepo.CreateTestUser(user, _factory);
+        await TestUserCreator.CreateTestUser(user, _factory);
 
         // Act
         var response = await _client.GetAsync($"{BaseUrl}/profile/{user.Id}");
@@ -70,7 +70,7 @@ public class UserControllerTests : IClassFixture<SqlServerFixture>
     {
         // Arrange
         var user = _fixture.Create<User>();
-        AuthenticationHeader.SetTestAuthHeader(_client, user.Id, UserRole.Customer);
+        TestAuthenticationHeader.SetTestAuthHeader(_client, user.Id, UserRole.Customer);
         
         // Act
         var response = await _client.GetAsync($"{BaseUrl}/profile/{user.Id}");
@@ -85,7 +85,7 @@ public class UserControllerTests : IClassFixture<SqlServerFixture>
         // Arrange
         var userDto = _fixture.Create<UpdateProfileBodyDto>();
         var userId = _fixture.Create<Guid>(); 
-        AuthenticationHeader.SetTestAuthHeader(_client, userId, UserRole.Customer);
+        TestAuthenticationHeader.SetTestAuthHeader(_client, userId, UserRole.Customer);
         
         // Act
         var response = await _client.PutAsJsonAsync($"{BaseUrl}/profile/{userId}", userDto);
@@ -103,13 +103,13 @@ public class UserControllerTests : IClassFixture<SqlServerFixture>
             .Create();
         const string updatedCountry = "Palestine";
         
-        await UserRepo.CreateTestUser(user, _factory);
+        await TestUserCreator.CreateTestUser(user, _factory);
         
         var updateDto = _fixture.Build<UpdateProfileBodyDto>()
             .With(x => x.Country, updatedCountry)
             .Create();
         
-        AuthenticationHeader.SetTestAuthHeader(_client, user.Id, UserRole.Customer);
+        TestAuthenticationHeader.SetTestAuthHeader(_client, user.Id, UserRole.Customer);
         
         // Act
         var response = await _client.PutAsJsonAsync($"{BaseUrl}/profile/{user.Id}", updateDto);
@@ -136,10 +136,10 @@ public class UserControllerTests : IClassFixture<SqlServerFixture>
         
         foreach (var user in users)
         {
-            await UserRepo.CreateTestUser(user, _factory);
+            await TestUserCreator.CreateTestUser(user, _factory);
         }
         var userId = _fixture.Create<Guid>();
-        AuthenticationHeader.SetTestAuthHeader(_client, userId, UserRole.Admin);
+        TestAuthenticationHeader.SetTestAuthHeader(_client, userId, UserRole.Admin);
 
         
         // Act
@@ -157,7 +157,7 @@ public class UserControllerTests : IClassFixture<SqlServerFixture>
     {
         // Arrange
         var userId = _fixture.Create<Guid>();
-        AuthenticationHeader.SetTestAuthHeader(_client, userId, UserRole.Customer);
+        TestAuthenticationHeader.SetTestAuthHeader(_client, userId, UserRole.Customer);
 
         // Act
         var response = await _client.GetAsync(BaseUrl);

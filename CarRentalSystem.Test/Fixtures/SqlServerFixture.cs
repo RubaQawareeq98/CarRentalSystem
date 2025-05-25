@@ -24,7 +24,7 @@ public class SqlServerFixture : IAsyncLifetime
         IConfiguration configuration =
             new ConfigurationBuilder()
             .SetBasePath(Directory.GetCurrentDirectory())
-            .AddJsonFile("appsettings.json", optional: false)
+            .AddJsonFile("testAppsettings.json", optional: false)
             .Build();
 
         var image = configuration["SqlServerContainer:Image"];

@@ -3,7 +3,7 @@ using CarRentalSystem.Db.Enums;
 
 namespace CarRentalSystem.Test.Shared;
 
-public abstract class AuthenticationHeader
+public abstract class TestAuthenticationHeader
 {
     public static void SetTestAuthHeader(HttpClient client, Guid userId, UserRole role)
     {
