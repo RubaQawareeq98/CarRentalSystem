@@ -2,10 +2,10 @@
 	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=7020124F_002D9FFC_002D4AC3_002D8F3D_002DAAB8E0240759_002Ff_003AExceptionAggregator_002Ecs_002Fl_003AC_0021_003FUsers_003FRuba_003FAppData_003FRoaming_003FJetBrains_003FRider2024_002E3_003Fresharper_002Dhost_003FSourcesCache_003F38284ca4f4afe378f96fccac3e179f4bceda7a74eb151623b66d2dc3634d9b_003FExceptionAggregator_002Ecs/@EntryIndexedValue">ForceIncluded</s:String>
 	<s:String x:Key="/Default/Environment/Highlighting/HighlightingSourceSnapshotLocation/@EntryValue">C:\Users\Ruba\AppData\Local\JetBrains\Rider2024.3\resharper-host\temp\Rider\vAny\CoverageData\_CarRentalSystem.551300358\Snapshot\snapshot.utdcvr</s:String>
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=ed23a17e_002De411_002D4f89_002D8037_002D6d2fdc0fd791/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="CarControllerTest" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
-  &lt;TestAncestor&gt;&#xD;
-    &lt;TestId&gt;xUnit::9DB43822-C228-44B0-B723-65A497DED40B::net9.0::CarRentalSystem.Test.Controllers.CarControllerTest&lt;/TestId&gt;&#xD;
-    &lt;TestId&gt;xUnit::9DB43822-C228-44B0-B723-65A497DED40B::net9.0::CarRentalSystem.Test.Controllers.UserControllerTests&lt;/TestId&gt;&#xD;
-  &lt;/TestAncestor&gt;&#xD;
+  &lt;Or&gt;&#xD;
+    &lt;Project Location="D:\CarRentalSystem\CarRentalSystem.Test" Presentation="&amp;lt;CarRentalSystem.Test&amp;gt;" /&gt;&#xD;
+    &lt;Project Location="D:\CarRentalSystem\CarRentalSystem.Tests" Presentation="&amp;lt;CarRentalSystem.Tests&amp;gt;" /&gt;&#xD;
+  &lt;/Or&gt;&#xD;
 &lt;/SessionState&gt;</s:String>
 	
 	

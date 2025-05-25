@@ -74,14 +74,13 @@ public class CarRepository(CarRentalSystemDbContext context) : ICarRepository
 
     public async Task<bool> IsCarAvailable(Guid carId, DateTime startDate, DateTime endDate)
     {
-        var car = await context.Cars
-            .Where(c => c.Id == carId &&
-                        c.Reservations != null &&
-                        !c.Reservations.Any(r =>
-                            startDate >= r.StartDate && endDate <= r.EndDate
-            ))
-            .FirstOrDefaultAsync();
-        return car is null;
+        return await context.Cars
+            .Where(c => c.Id == carId)
+            .AnyAsync(c => c.IsAvailable && 
+                           !c.Reservations.Any(r => 
+                               (startDate >= r.StartDate && startDate <= r.EndDate) ||  
+                               (endDate >= r.StartDate && endDate <= r.EndDate) ||      
+                               (r.StartDate >= startDate && r.StartDate <= endDate))); 
     }
 
     public async Task AddCarAsync(Car car)
