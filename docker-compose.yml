@@ -10,7 +10,7 @@ services:
     volumes:
       - sqlserverdata:/var/opt/mssql
     healthcheck:
-      test: ["CMD", "/opt/mssql-tools/bin/sqlcmd", "-S", "localhost", "-U", "sa", "-P", "ruba12345", "-Q", "SELECT 1"]
+      test: ["CMD", "/opt/mssql-tools/bin/sqlcmd", "-S", "localhost", "-U", "sa", "-P", "Ruba*12345", "-Q", "SELECT 1"]
       interval: 5s
       timeout: 5s
       retries: 10
