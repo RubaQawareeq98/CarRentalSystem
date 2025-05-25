@@ -1,16 +1,30 @@
 using System.Net;
 using System.Net.Http.Json;
 using AutoFixture;
+using CarRentalSystem.Api;
 using CarRentalSystem.Api.Models.Authentication;
+using CarRentalSystem.Db.Models;
 using CarRentalSystem.Test.Fixtures;
+using CarRentalSystem.Test.Shared;
+using Microsoft.AspNetCore.Mvc.Testing;
 
 namespace CarRentalSystem.Test.Controllers;
 
-public class AuthenticationControllerTests(SqlServerFixture sqlServerFixture) : IClassFixture<SqlServerFixture>
+public class AuthenticationControllerTests : IClassFixture<SqlServerFixture>
 {
-    private readonly HttpClient _client = sqlServerFixture.Client;
+    private readonly HttpClient _client;
     private readonly IFixture _fixture = new Fixture();
     private const string BaseUrl = "/api/authentication";
+    private readonly WebApplicationFactory<Program> _factory;
+
+
+    public AuthenticationControllerTests(SqlServerFixture sqlServerFixture)
+    {
+        _fixture.Behaviors.Remove(new ThrowingRecursionBehavior());
+        _fixture.Behaviors.Add(new OmitOnRecursionBehavior());
+        _client = sqlServerFixture.Client;
+        _factory = sqlServerFixture.Factory;
+    }
 
     [Fact]
     public async Task SignUp_ValidRequestBody_ShouldReturnsOk()
@@ -79,13 +93,13 @@ public class AuthenticationControllerTests(SqlServerFixture sqlServerFixture) : 
         var loginRequest = new LoginRequestBodyDto { Email = email, Password = password };
 
         
-        var user = _fixture.Build<SignupRequestBodyDto>()
+        var user = _fixture.Build<User>()
             .With(x => x.Email, email)
             .With(x => x.Password, password)
-            .With(x => x.ConfirmPassword, password)
             .Create();
 
-        await _client.PostAsJsonAsync($"{BaseUrl}/sign-up", user);
+        await UserRepo.CreateTestUser(user, _factory);
+  
 
         // Act
         var response = await _client.PostAsJsonAsync($"{BaseUrl}/sign-in", loginRequest);

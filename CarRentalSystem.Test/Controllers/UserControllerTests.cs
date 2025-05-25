@@ -1,5 +1,4 @@
 using System.Net;
-using System.Net.Http.Headers;
 using CarRentalSystem.Api.Models.Profile;
 using CarRentalSystem.Db.Models;
 using CarRentalSystem.Test.Fixtures;
@@ -7,8 +6,9 @@ using System.Net.Http.Json;
 using AutoFixture;
 using CarRentalSystem.Api;
 using CarRentalSystem.Api.Models.Users;
-using CarRentalSystem.Db;
+using CarRentalSystem.Db.Enums;
 using CarRentalSystem.Test.Handlers;
+using CarRentalSystem.Test.Shared;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
@@ -16,7 +16,6 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace CarRentalSystem.Test.Controllers;
 
-[Collection("IntegrationTests")]
 public class UserControllerTests : IClassFixture<SqlServerFixture>
 {
     private readonly HttpClient _client;
@@ -46,9 +45,9 @@ public class UserControllerTests : IClassFixture<SqlServerFixture>
     {
         // Arrange
         var user = _fixture.Create<User>();
-        SetTestAuthHeader(Guid.NewGuid().ToString(), "Customer");
+        AuthenticationHeader.SetTestAuthHeader(_client, user.Id, UserRole.Customer);
         
-        await CreateTestUser(user);
+        await UserRepo.CreateTestUser(user, _factory);
 
         // Act
         var response = await _client.GetAsync($"{BaseUrl}/profile/{user.Id}");
@@ -67,7 +66,7 @@ public class UserControllerTests : IClassFixture<SqlServerFixture>
     {
         // Arrange
         var user = _fixture.Create<User>();
-        SetTestAuthHeader(Guid.NewGuid().ToString(), "Customer");
+        AuthenticationHeader.SetTestAuthHeader(_client, user.Id, UserRole.Customer);
         
         // Act
         var response = await _client.GetAsync($"{BaseUrl}/profile/{user.Id}");
@@ -82,7 +81,7 @@ public class UserControllerTests : IClassFixture<SqlServerFixture>
         // Arrange
         var userDto = _fixture.Create<UpdateProfileBodyDto>();
         var userId = _fixture.Create<Guid>(); 
-        SetTestAuthHeader(Guid.NewGuid().ToString(), "Customer");
+        AuthenticationHeader.SetTestAuthHeader(_client, userId, UserRole.Customer);
         
         // Act
         var response = await _client.PutAsJsonAsync($"{BaseUrl}/profile/{userId}", userDto);
@@ -99,12 +98,12 @@ public class UserControllerTests : IClassFixture<SqlServerFixture>
             .Without(u => u.Reservations)
             .Create();
         
-        await CreateTestUser(user);
+        await UserRepo.CreateTestUser(user, _factory);
         
         var updateDto = _fixture.Build<UpdateProfileBodyDto>()
             .With(x => x.Country, "Palestine")
             .Create();
-        SetTestAuthHeader(Guid.NewGuid().ToString(), "Customer");
+        AuthenticationHeader.SetTestAuthHeader(_client, user.Id, UserRole.Customer);
         
         // Act
         var response = await _client.PutAsJsonAsync($"{BaseUrl}/profile/{user.Id}", updateDto);
@@ -131,9 +130,10 @@ public class UserControllerTests : IClassFixture<SqlServerFixture>
         
         foreach (var user in users)
         {
-            await CreateTestUser(user);
+            await UserRepo.CreateTestUser(user, _factory);
         }
-        SetTestAuthHeader(Guid.NewGuid().ToString(), "Admin");
+        var userId = _fixture.Create<Guid>();
+        AuthenticationHeader.SetTestAuthHeader(_client, userId, UserRole.Admin);
 
         
         // Act
@@ -150,32 +150,13 @@ public class UserControllerTests : IClassFixture<SqlServerFixture>
     public async Task GetAllUsers_NotAdminRole_ShouldReturnForbidden()
     {
         // Arrange
-        SetTestAuthHeader(Guid.NewGuid().ToString(), "Customer");
+        var userId = _fixture.Create<Guid>();
+        AuthenticationHeader.SetTestAuthHeader(_client, userId, UserRole.Customer);
 
         // Act
         var response = await _client.GetAsync(BaseUrl);
 
         // Assert
         Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);
-    }
-
-    
-    private async Task CreateTestUser(User user)
-    {
-        using var scope = _factory.Services.CreateScope();
-        var dbContext = scope.ServiceProvider.GetRequiredService<CarRentalSystemDbContext>();
-        
-        var existingUser = await dbContext.Users.FindAsync(user.Id);
-        if (existingUser is null)
-        {
-            dbContext.Users.Add(user);
-            await dbContext.SaveChangesAsync();
-        }
-    }
-    
-    private void SetTestAuthHeader(string userId, string role)
-    {
-        _client.DefaultRequestHeaders.Authorization = 
-            new AuthenticationHeaderValue("TestAuthScheme", $"{userId}|{role}");
     }
 }
