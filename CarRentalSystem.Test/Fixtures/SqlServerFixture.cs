@@ -15,7 +15,7 @@ public class SqlServerFixture : IAsyncLifetime
     public WebApplicationFactory<Program> Factory { get; private set; }
 
     public HttpClient Client { get; private set; }
-    private string ConnectionString { get; set; }
+    private string ConnectionString { get; set; } = string.Empty;
 
     public SqlServerFixture()
     {

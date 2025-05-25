@@ -9,6 +9,7 @@ using CarRentalSystem.Api.Models.Users;
 using CarRentalSystem.Db.Enums;
 using CarRentalSystem.Test.Handlers;
 using CarRentalSystem.Test.Shared;
+using FluentAssertions;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
@@ -55,10 +56,11 @@ public class UserControllerTests : IClassFixture<SqlServerFixture>
         // Assert
         response.EnsureSuccessStatusCode();
         var responseContent = await response.Content.ReadFromJsonAsync<ProfileResponseDto>();
-        Assert.NotNull(responseContent);
-        Assert.Equal(user.FirstName, responseContent.FirstName);
-        Assert.Equal(user.LastName, responseContent.LastName);
-        Assert.Equal(user.Email, responseContent.Email);
+
+        responseContent.Should().NotBeNull();
+        responseContent.FirstName.Should().Be(user.FirstName);
+        responseContent.LastName.Should().Be(user.LastName);
+        responseContent.Email.Should().Be(user.Email);
     }
 
     [Fact]
@@ -72,7 +74,7 @@ public class UserControllerTests : IClassFixture<SqlServerFixture>
         var response = await _client.GetAsync($"{BaseUrl}/profile/{user.Id}");
 
         // Assert
-        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
 
     [Fact]
@@ -87,7 +89,7 @@ public class UserControllerTests : IClassFixture<SqlServerFixture>
         var response = await _client.PutAsJsonAsync($"{BaseUrl}/profile/{userId}", userDto);
         
         // Assert
-        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
     
     [Fact]
@@ -114,10 +116,10 @@ public class UserControllerTests : IClassFixture<SqlServerFixture>
         var getResponse = await _client.GetAsync($"{BaseUrl}/profile/{user.Id}");
         var updatedUser = await getResponse.Content.ReadFromJsonAsync<ProfileResponseDto>();
         
-        Assert.NotNull(updatedUser);
-        Assert.Equal(updateDto.FirstName, updatedUser.FirstName);
-        Assert.Equal(updateDto.LastName, updatedUser.LastName);
-        Assert.Equal(updateDto.Country, updatedUser.Country);
+        updatedUser.Should().NotBeNull();
+        updatedUser.FirstName.Should().Be(user.FirstName);
+        updatedUser.LastName.Should().Be(user.LastName);
+        updatedUser.Country.Should().Be(user.Country);
     }
     
     [Fact]
@@ -142,8 +144,9 @@ public class UserControllerTests : IClassFixture<SqlServerFixture>
         // Assert
         response.EnsureSuccessStatusCode();
         var responseContent = await response.Content.ReadFromJsonAsync<List<UserResponseDto>>();
-        Assert.NotNull(responseContent);
-        Assert.True(responseContent.Count >= users.Count); 
+        responseContent.Should().NotBeNull();
+        responseContent.Should().HaveCount(users.Count);
+        
     }
 
     [Fact]
@@ -157,6 +160,6 @@ public class UserControllerTests : IClassFixture<SqlServerFixture>
         var response = await _client.GetAsync(BaseUrl);
 
         // Assert
-        Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);
+        response.StatusCode.Should().Be(HttpStatusCode.Forbidden);
     }
 }

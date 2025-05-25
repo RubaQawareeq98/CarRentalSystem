@@ -6,6 +6,7 @@ using CarRentalSystem.Api.Models.Authentication;
 using CarRentalSystem.Db.Models;
 using CarRentalSystem.Test.Fixtures;
 using CarRentalSystem.Test.Shared;
+using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.Testing;
 
 namespace CarRentalSystem.Test.Controllers;
@@ -40,7 +41,7 @@ public class AuthenticationControllerTests : IClassFixture<SqlServerFixture>
         var response = await _client.PostAsJsonAsync($"{BaseUrl}/sign-up", user);
 
         // Assert
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
     }
 
     [Fact]
@@ -59,7 +60,7 @@ public class AuthenticationControllerTests : IClassFixture<SqlServerFixture>
         var response = await _client.PostAsJsonAsync($"{BaseUrl}/sign-up", user);
 
         // Assert
-        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }
 
     [Fact]
@@ -81,7 +82,7 @@ public class AuthenticationControllerTests : IClassFixture<SqlServerFixture>
         var response = await _client.PostAsJsonAsync($"{BaseUrl}/sign-up", user);
 
         // Assert
-        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }
 
     [Fact]
@@ -105,9 +106,10 @@ public class AuthenticationControllerTests : IClassFixture<SqlServerFixture>
         var response = await _client.PostAsJsonAsync($"{BaseUrl}/sign-in", loginRequest);
 
         // Assert
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
         var authResponse = await response.Content.ReadFromJsonAsync<AuthResponseDto>();
-        Assert.NotNull(authResponse?.Token);
+        authResponse.Should().NotBeNull();
+        authResponse.Token.Should().NotBeNull();
     }
 
     [Fact]
@@ -121,6 +123,7 @@ public class AuthenticationControllerTests : IClassFixture<SqlServerFixture>
         // Act
         var response = await _client.PostAsJsonAsync($"{BaseUrl}/sign-in", loginRequest);
 
-        Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
     }
 }
