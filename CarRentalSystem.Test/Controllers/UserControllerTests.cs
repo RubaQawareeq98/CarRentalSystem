@@ -50,7 +50,7 @@ public class UserControllerTests : IClassFixture<SqlServerFixture>
         var user = _fixture.Create<User>();
         TestAuthenticationHeader.SetTestAuthHeader(_client, user.Id, UserRole.Customer);
         
-        await TestUserCreator.CreateTestUser(user, _factory);
+        await UserTestUtilities.CreateTestUser(user, _factory);
 
         // Act
         var response = await _client.GetAsync($"{BaseUrl}/profile/{user.Id}");
@@ -103,7 +103,7 @@ public class UserControllerTests : IClassFixture<SqlServerFixture>
             .Create();
         const string updatedCountry = "Palestine";
         
-        await TestUserCreator.CreateTestUser(user, _factory);
+        await UserTestUtilities.CreateTestUser(user, _factory);
         
         var updateDto = _fixture.Build<UpdateProfileBodyDto>()
             .With(x => x.Country, updatedCountry)
@@ -136,7 +136,7 @@ public class UserControllerTests : IClassFixture<SqlServerFixture>
         
         foreach (var user in users)
         {
-            await TestUserCreator.CreateTestUser(user, _factory);
+            await UserTestUtilities.CreateTestUser(user, _factory);
         }
         var userId = _fixture.Create<Guid>();
         TestAuthenticationHeader.SetTestAuthHeader(_client, userId, UserRole.Admin);

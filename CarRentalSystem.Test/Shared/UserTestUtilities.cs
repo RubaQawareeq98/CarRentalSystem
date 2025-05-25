@@ -6,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace CarRentalSystem.Test.Shared;
 
-public abstract class TestUserCreator
+public abstract class UserTestUtilities
 {
     public static async Task CreateTestUser(User user, WebApplicationFactory<Program> factory)
     {

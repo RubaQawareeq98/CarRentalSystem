@@ -101,7 +101,7 @@ public class AuthenticationControllerTests : IClassFixture<SqlServerFixture>
             .With(x => x.Password, password)
             .Create();
 
-        await TestUserCreator.CreateTestUser(user, _factory);
+        await UserTestUtilities.CreateTestUser(user, _factory);
   
 
         // Act

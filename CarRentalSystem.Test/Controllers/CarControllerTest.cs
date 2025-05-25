@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using System.Net;
 using System.Net.Http.Json;
 using CarRentalSystem.Api;
-using CarRentalSystem.Db;
 using CarRentalSystem.Db.Enums;
 using CarRentalSystem.Test.Handlers;
 using CarRentalSystem.Test.Shared;
@@ -53,9 +52,8 @@ public class CarControllerTest : IClassFixture<SqlServerFixture>
             .ToList();
         
         TestAuthenticationHeader.SetTestAuthHeader(_client, _fixture.Create<Guid>(), UserRole.Customer);
-       await AddTestCars(cars);
+        await CarTestUtilities.AddTestCars(cars, _factory);
         
-
         // Act
         var response = await _client.GetAsync($"{BaseUrl}?pageNumber=1&pageSize=5");
 
@@ -97,8 +95,9 @@ public class CarControllerTest : IClassFixture<SqlServerFixture>
             .ToList();
 
         TestAuthenticationHeader.SetTestAuthHeader(_client, _fixture.Create<Guid>(), UserRole.Customer);
-        await AddTestCars(availableCars.Concat(unavailableCars).ToList());
-
+        
+        await CarTestUtilities.AddTestCars(availableCars.Concat(unavailableCars).ToList(), _factory);
+        
         // Act
         var response = await _client.GetAsync($"{BaseUrl}/available?pageNumber=1&pageSize=5");
 
@@ -127,8 +126,8 @@ public class CarControllerTest : IClassFixture<SqlServerFixture>
         
         TestAuthenticationHeader.SetTestAuthHeader(_client, _fixture.Create<Guid>(), UserRole.Customer);
 
-        await AddTestCars(redCars.Concat(cars).ToList());
-
+        await CarTestUtilities.AddTestCars(redCars.Concat(cars).ToList(), _factory);
+        
         var searchDto = new CarSearchDto { Color = "Red", Brand = "Toyota", MinYear = 2019 };
 
         // Act
@@ -177,7 +176,7 @@ public class CarControllerTest : IClassFixture<SqlServerFixture>
             .Without(c => c.Reservations)
             .Create();
         
-        await AddTestCars([car]);
+        await CarTestUtilities.AddTestCars([car], _factory);
 
         var updateRequest = _fixture.Create<CarRequestDto>();
         TestAuthenticationHeader.SetTestAuthHeader(_client, _fixture.Create<Guid>(), UserRole.Admin);
@@ -202,14 +201,5 @@ public class CarControllerTest : IClassFixture<SqlServerFixture>
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
-    }
-
-    private async Task AddTestCars(List<Car> cars)
-    {
-        using var scope = _factory.Services.CreateScope();
-        var dbContext = scope.ServiceProvider.GetRequiredService<CarRentalSystemDbContext>();
-        
-        dbContext.Cars.AddRange(cars);
-        await dbContext.SaveChangesAsync();
     }
 }
