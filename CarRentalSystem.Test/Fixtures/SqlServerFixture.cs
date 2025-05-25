@@ -87,7 +87,7 @@ public class SqlServerFixture : IAsyncLifetime
         using var scope = Factory.Services.CreateScope();
         var db = scope.ServiceProvider.GetRequiredService<CarRentalSystemDbContext>();
 
-        var tableNames = new[] { "Reservations", "Users" };
+        var tableNames = new[] { "Reservations", "Users", "Cars" };
 
         foreach (var table in tableNames)
         {
