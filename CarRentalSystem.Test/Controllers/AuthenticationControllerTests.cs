@@ -6,9 +6,9 @@ using CarRentalSystem.Test.Fixtures;
 
 namespace CarRentalSystem.Test.Controllers;
 
-public class AuthenticationControllerTests(SqlServerFixture fixture) : IClassFixture<SqlServerFixture>
+public class AuthenticationControllerTests(SqlServerFixture sqlServerFixture) : IClassFixture<SqlServerFixture>
 {
-    private readonly HttpClient _client = fixture.Client;
+    private readonly HttpClient _client = sqlServerFixture.Client;
     private readonly IFixture _fixture = new Fixture();
     private const string BaseUrl = "/api/authentication";
 

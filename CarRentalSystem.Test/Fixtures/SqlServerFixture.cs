@@ -12,8 +12,10 @@ public class SqlServerFixture : IAsyncLifetime
 {
     private readonly MsSqlContainer _dbContainer;
 
+    public WebApplicationFactory<Program> Factory { get; private set; }
+
     public HttpClient Client { get; private set; }
-    public string ConnectionString { get; private set; }
+    private string ConnectionString { get; set; }
 
     public SqlServerFixture()
     {
@@ -37,7 +39,7 @@ public class SqlServerFixture : IAsyncLifetime
         await _dbContainer.StartAsync();
         ConnectionString = _dbContainer.GetConnectionString();
 
-        var factory = new WebApplicationFactory<Program>() 
+        Factory = new WebApplicationFactory<Program>() 
             .WithWebHostBuilder(builder =>
             {
                 builder.ConfigureServices(services =>
@@ -65,7 +67,7 @@ public class SqlServerFixture : IAsyncLifetime
                 });
             });
 
-        Client = factory.CreateClient();
+        Client = Factory.CreateClient();
     }
 
     public async Task DisposeAsync()
