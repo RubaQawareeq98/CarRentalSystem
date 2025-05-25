@@ -6,8 +6,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CarRentalSystem.Db", "CarRe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CarRentalSystem.Api", "CarRentalSystem.Api\CarRentalSystem.Api.csproj", "{EBB47616-1992-4668-B10E-F4E6682FFDAA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CarRentalSystem.Test", "CarRentalSystem.Test\CarRentalSystem.Test.csproj", "{5B72E6F5-7EA4-4E5F-99B3-B78DFF9EEB22}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
