@@ -1,7 +1,9 @@
+using CarRentalSystem.Api.Configurations;
 using CarRentalSystem.Api.Middlewares;
 using CarRentalSystem.Api.ServiceRegistration;
 using CarRentalSystem.Db;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +15,16 @@ builder.RegisterJwtParams();
 builder.RegisterBrevoOptions();
 builder.Services.RegisterMappers();
 builder.Services.RegisterValidators();
+
+var elasticSearchConfig = builder.Configuration
+    .GetSection("ElasticSearch")
+    .Get<ElasticSearchConfigurations>();
+
+
+var logger = LoggerRegistration.RegisterLogger(elasticSearchConfig);
+
+Log.Logger = logger;
+builder.Host.UseSerilog();
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
@@ -40,4 +52,5 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.UseMiddleware<ExceptionHandlingMiddleware>();
+
 await app.RunAsync();

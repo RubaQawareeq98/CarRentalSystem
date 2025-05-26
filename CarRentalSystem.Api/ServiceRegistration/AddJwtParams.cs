@@ -8,9 +8,9 @@ public static class AddJwtParams
     {
         var jwtSection = builder.Configuration.GetSection("Authentication");
 
-        builder.Services.Configure<JwtConfiguration>(jwtSection);
+        builder.Services.Configure<JwtConfigurations>(jwtSection);
 
-        var jwtConfig = jwtSection.Get<JwtConfiguration>();
+        var jwtConfig = jwtSection.Get<JwtConfigurations>();
         ArgumentNullException.ThrowIfNull(jwtConfig);
         
         builder.Services.AddSingleton(jwtConfig);

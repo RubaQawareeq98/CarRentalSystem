@@ -5,7 +5,7 @@ namespace CarRentalSystem.Api.ServiceRegistration;
 
 public static class AddAuthenticationOptions
 {
-    public static void RegisterAuthentication(this IServiceCollection services, JwtConfiguration jwtConfig)
+    public static void RegisterAuthentication(this IServiceCollection services, JwtConfigurations jwtConfig)
     {
         services.AddAuthentication("Bearer")
             .AddJwtBearer("Bearer", options =>
