@@ -92,9 +92,10 @@ public class ResetPasswordControllerTest
             .Create();
         
         var token = _fixture.Build<PasswordResetToken>()
-            .With(u => u.Email, testEmail)
-            .With(u => u.Token, testToken)
-            .Create();
+                .With(t => t.Email, testEmail)
+                .With(t => t.Token, testToken)
+                .With(t => t.ExpiryDate, DateTime.UtcNow.AddHours(1)) 
+                .Create();
        
         var request = new ResetPasswordDto
         {

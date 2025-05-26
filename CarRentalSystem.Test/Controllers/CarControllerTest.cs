@@ -114,8 +114,12 @@ public class CarControllerTest : IClassFixture<SqlServerFixture>
         var redCars = _fixture.Build<Car>()
             .With(c => c.Color, "Red")
             .With(c => c.Brand, "Toyota")
+            .With(c => c.Model, "Corolla")
+            .With(c => c.Location, "New York")
+            .With(c => c.Price, 15000m)
             .With(c => c.Year, 2020)
-            .Without(c => c.Reservations)
+            .With(c => c.IsAvailable, true)
+            .Without(c => c.Reservations) 
             .CreateMany(2)
             .ToList();
 
@@ -128,16 +132,31 @@ public class CarControllerTest : IClassFixture<SqlServerFixture>
 
         await CarTestUtilities.AddTestCars(redCars.Concat(cars).ToList(), _factory);
         
-        var searchDto = new CarSearchDto { Color = "Red", Brand = "Toyota", MinYear = 2019 };
+        var searchDto = new CarSearchDto
+        {
+            Color = "Red",
+            Brand = "Toyota",
+            MinYear = 2019,
+            MaxYear = 2025,
+            Model = "Corolla",
+            Location = "New York",
+            MinPrice = 14000,
+            MaxPrice = 16000,
+            StartDate = DateTime.Today,
+            EndDate = DateTime.Today.AddDays(3)
+        };
 
         // Act
-        var query = $"?Color={searchDto.Color}&Brand={searchDto.Brand}&MinYear={searchDto.MinYear}";
+        var query = $"""
+                     ?Color={searchDto.Color}&Brand={searchDto.Brand}&MinYear={searchDto.MinYear}&Model={searchDto.Model}&
+                         Location={searchDto.Location}&MinPrice={searchDto.MinPrice}&MaxPrice={searchDto.MaxPrice}&StartDate={searchDto.StartDate}&EndDate={searchDto.EndDate}
+                     """;
         var response = await _client.GetAsync($"{BaseUrl}/search{query}");
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
         var responseCars = await response.Content.ReadFromJsonAsync<List<CarResponseDto>>();
-        responseCars.Should().NotBeNull().And.HaveCount(1);
+        responseCars.Should().NotBeNull().And.HaveCount(2);
     }
 
     [Fact]
