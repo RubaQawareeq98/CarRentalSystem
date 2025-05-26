@@ -21,9 +21,13 @@ var elasticSearchConfig = builder.Configuration
     .Get<ElasticSearchConfigurations>();
 
 
-var logger = LoggerRegistration.RegisterLogger(elasticSearchConfig);
+if (elasticSearchConfig != null)
+{
+    var logger = LoggerRegistration.RegisterLogger(elasticSearchConfig);
 
-Log.Logger = logger;
+    Log.Logger = logger;
+}
+
 builder.Host.UseSerilog();
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
