@@ -33,12 +33,22 @@ builder.Host.UseSerilog();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
-builder.Services.AddDbContext<CarRentalSystemDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("SqlConnectionString")));
-
+builder.Services.AddDbContext<CarRentalSystemDbContext>(
+    options =>
+    options.UseSqlServer(
+        builder.Configuration.GetConnectionString("SqlConnectionString"),
+        sqlOptions => sqlOptions.EnableRetryOnFailure()
+    )
+    );
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<CarRentalSystemDbContext>();
+    await db.Database.MigrateAsync(); // or db.Database.EnsureCreated();
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
