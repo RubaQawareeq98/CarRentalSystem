@@ -5,61 +5,68 @@ using CarRentalSystem.Db;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 
-var builder = WebApplication.CreateBuilder(args);
+namespace CarRentalSystem.Api;
 
-// Add services to the container.
-
-builder.Services.RegisterServices();
-builder.Services.AddControllers();
-builder.RegisterJwtParams();
-builder.RegisterBrevoOptions();
-builder.Services.RegisterMappers();
-builder.Services.RegisterValidators();
-
-var elasticSearchConfig = builder.Configuration
-    .GetSection("ElasticSearch")
-    .Get<ElasticSearchConfigurations>();
-
-
-if (elasticSearchConfig != null)
+public class Program
 {
-    var logger = LoggerRegistration.RegisterLogger(elasticSearchConfig);
+    public static async Task Main(string[] args)
+    {
+        var builder = WebApplication.CreateBuilder(args);
 
-    Log.Logger = logger;
-}
 
-builder.Host.UseSerilog();
+        builder.Services.RegisterServices();
+        builder.Services.AddControllers();
+        builder.RegisterJwtParams();
+        builder.RegisterBrevoOptions();
+        builder.Services.RegisterMappers();
+        builder.Services.RegisterValidators();
+
+        var elasticSearchConfig = builder.Configuration
+            .GetSection("ElasticSearch")
+            .Get<ElasticSearchConfigurations>();
+
+
+        if (elasticSearchConfig != null)
+        {
+            var logger = LoggerRegistration.RegisterLogger(elasticSearchConfig);
+
+            Log.Logger = logger;
+        }
+
+        builder.Host.UseSerilog();
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
+        builder.Services.AddOpenApi();
 
-builder.Services.AddDbContext<CarRentalSystemDbContext>(
-    options =>
-    options.UseSqlServer(
-        builder.Configuration.GetConnectionString("SqlConnectionString"),
-        sqlOptions => sqlOptions.EnableRetryOnFailure()
-    )
-    );
-builder.Services.AddSwaggerGen();
+        builder.Services.AddDbContext<CarRentalSystemDbContext>(
+            options =>
+                options.UseSqlServer(
+                    builder.Configuration.GetConnectionString("SqlConnectionString"),
+                    sqlOptions => sqlOptions.EnableRetryOnFailure()
+                )
+        );
+        builder.Services.AddSwaggerGen();
 
-var app = builder.Build();
+        var app = builder.Build();
 
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.MapOpenApi();
-    app.UseSwagger();
-    app.UseSwaggerUI();
+        if (app.Environment.IsDevelopment())
+        {
+            app.MapOpenApi();
+            app.UseSwagger();
+            app.UseSwaggerUI();
+        }
+
+        app.UseHttpsRedirection();
+
+        app.UseAuthentication();
+        app.UseAuthorization();
+
+        app.MapControllers();
+
+        app.UseMiddleware<ExceptionHandlingMiddleware>();
+
+        await app.RunAsync();
+    }
 }
-
-app.UseHttpsRedirection();
-
-app.UseAuthentication();
-app.UseAuthorization();
-
-app.MapControllers();
-
-app.UseMiddleware<ExceptionHandlingMiddleware>();
-
-await app.RunAsync();

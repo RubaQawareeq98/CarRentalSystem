@@ -28,7 +28,7 @@ public class UserController(IUserRepository userRepository,
         return Ok(userProfile);
     }
 
-    [HttpPut("{userId}")]
+    [HttpPut("profile/{userId}")]
     public async Task<ActionResult> UpdateProfile(Guid userId, UpdateProfileBodyDto bodyDto)
     {
         var user = await userRepository.FindUserByIdAsync(userId);

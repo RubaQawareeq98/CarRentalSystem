@@ -1,0 +1,6 @@
+{
+  "SqlServerContainer": {
+    "Image": "mcr.microsoft.com/mssql/server:2022-latest",
+    "Password": "Ruba*12345"
+  }
+}

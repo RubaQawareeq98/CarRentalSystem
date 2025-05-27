@@ -47,13 +47,14 @@ public class CarController(ICarRepository carRepository,
     }
 
     [HttpGet("search")]
-    public async Task<ActionResult<List<CarResponseDto>>> GetSearchCars(CarSearchDto carSearchDto)
+    public async Task<ActionResult<List<CarResponseDto>>> GetSearchCars([FromQuery] CarSearchDto carSearchDto)
     {
         var filteredCars = await carRepository.GetFilteredCarsAsync(carSearchDto);
         var carsResponse = mapper.ToCarResponseDto(filteredCars);
-        
+    
         return Ok(carsResponse);
     }
+
     
     [Authorize(Roles = "Admin")]
     [HttpPost]
