@@ -2,6 +2,8 @@ using CarRentalSystem.Api.Middlewares;
 using CarRentalSystem.Api.ServiceRegistration;
 using CarRentalSystem.Db;
 using Microsoft.EntityFrameworkCore;
+using Sieve.Models;
+using Sieve.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,6 +23,10 @@ builder.Services.AddDbContext<CarRentalSystemDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("SqlConnectionString")));
 
 builder.Services.AddSwaggerGen();
+
+
+builder.Services.Configure<SieveOptions>(builder.Configuration.GetSection("Sieve"));
+builder.Services.AddScoped<ISieveProcessor, SieveProcessor>();
 
 var app = builder.Build();
 
