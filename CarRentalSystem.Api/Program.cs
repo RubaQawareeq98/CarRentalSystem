@@ -4,6 +4,8 @@ using CarRentalSystem.Api.ServiceRegistration;
 using CarRentalSystem.Db;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
+using Sieve.Models;
+using Sieve.Services;
 
 namespace CarRentalSystem.Api;
 
@@ -34,6 +36,10 @@ public class Program
         }
 
         builder.Host.UseSerilog();
+        
+        builder.Services.Configure<SieveOptions>(builder.Configuration.GetSection("Sieve"));
+        builder.Services.AddScoped<ISieveProcessor, SieveProcessor>();
+
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
         builder.Services.AddOpenApi();
