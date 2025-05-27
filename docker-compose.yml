@@ -60,8 +60,7 @@ services:
       - "5601:5601"
     environment:
       - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
-      - ELASTICSEARCH_USERNAME=elastic
-      - ELASTICSEARCH_PASSWORD=cJKJWoXXTUtXJqif8guOlhpp
+      - ELASTICSEARCH_SERVICEACCOUNTTOKEN=AAEAAWVsYXN0aWMva2liYW5hL2tpYmFuYS10b2tlbjo5Z2E5VUVaSlN4LWVxLVplRng2dEJn
     depends_on:
       - elasticsearch
 
