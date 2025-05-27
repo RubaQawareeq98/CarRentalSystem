@@ -5,7 +5,7 @@ using CarRentalSystem.Api.Mappers.Users;
 
 namespace CarRentalSystem.Api.ServiceRegistration;
 
-public static class AddMappers
+public static class MappersRegistration
 {
     public static void RegisterMappers(this IServiceCollection services)
     {

@@ -2,7 +2,7 @@ using CarRentalSystem.Api.Configurations;
 
 namespace CarRentalSystem.Api.ServiceRegistration;
 
-public static class AddJwtParams
+public static class JwtParamsRegistration
 {
     public static void RegisterJwtParams(this WebApplicationBuilder builder)
     {

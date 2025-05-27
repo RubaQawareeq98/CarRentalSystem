@@ -3,7 +3,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace CarRentalSystem.Api.ServiceRegistration;
 
-public static class AddAuthenticationOptions
+public static class AuthenticationOptionsRegistration
 {
     public static void RegisterAuthentication(this IServiceCollection services, JwtConfigurations jwtConfig)
     {
