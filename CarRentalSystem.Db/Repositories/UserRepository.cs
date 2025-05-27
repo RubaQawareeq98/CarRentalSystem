@@ -1,11 +1,10 @@
 using CarRentalSystem.Db.Models;
 using CarRentalSystem.Db.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 
 namespace CarRentalSystem.Db.Repositories;
 
-public class UserRepository (CarRentalSystemDbContext context, ILogger<UserRepository>logger) : IUserRepository
+public class UserRepository (CarRentalSystemDbContext context) : IUserRepository
 {
     public async Task<User?> FindUserByEmailAsync(string email)
     {
@@ -33,8 +32,7 @@ public class UserRepository (CarRentalSystemDbContext context, ILogger<UserRepos
             return null;
         }
 
-        //var isPasswordValid = BCrypt.Net.BCrypt.Verify(password, user.Password);
-        var isPasswordValid = true;
+        var isPasswordValid = BCrypt.Net.BCrypt.Verify(password, user.Password);
         return isPasswordValid ? user : null;
     }
 

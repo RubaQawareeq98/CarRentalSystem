@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CarRentalSystem.Api.Controllers;
 
-//[Authorize]
+[Authorize]
 [Route("api/users")]
 [ApiController]
 public class UserController(IUserRepository userRepository,
@@ -42,7 +42,7 @@ public class UserController(IUserRepository userRepository,
         return Ok("Date updated successfully");
     }
     
-    //[Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin")]
     [HttpGet]
     public async Task<ActionResult<List<UserResponseDto>>> GetAllUsers()
     {

@@ -1,35 +1,25 @@
 
 services:
-  carrental.api:
+  carrentalsystem.api:
     build:
       context: .
       dockerfile: CarRentalSystem.Api/Dockerfile
     ports:
       - "8080:8080"
-    environment:
-      - ConnectionStrings__SqlConnectionString=Server=sqlserver;Database=CarRentalSystem;User ID=sa;Password=Ruba*12345;TrustServerCertificate=true;
-      - Authentication__SecretKey=23d9a3f4e72e4f3ba83b7c2f9321846b60fadbcc2c75be44b1389a7244b84f79
-      - Authentication__Issuer=https://localhost:8080
-      - Authentication__Audience=webapi
-      - Authentication__TokenExpirationMinutes=60
-      - BrevoSettings__ApiKey=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
-      - BrevoSettings__SenderEmail=rubaqawareeq2@gmail.com
-      - BrevoSettings__SenderName=Car Rental System
-      - Client__ClientUrl=http://localhost:5051/
-      - ElasticSearch__ElasticSearchUri=http://elasticsearch:9200
-      - ElasticSearch__Username=elastic
-      - ElasticSearch__Password=cJKJWoXXTUtXJqif8guOlhpp
-      - ElasticSearch__IndexFormat=dotnet-logs-{0:yyyy.MM.dd}
+    env_file:
+      - env/CarRentalApiEnv/sqlConnection.env
+      - env/CarRentalApiEnv/jwtAuthentication.env
+      - env/CarRentalApiEnv/brevoSettings.env
+      - env/CarRentalApiEnv/elasticSearch.env
+      - env/CarRentalApiEnv/client.env
     depends_on:
       - sqlserver
       - elasticsearch
 
   sqlserver:
     image: mcr.microsoft.com/mssql/server:2022-latest
-    environment:
-      SA_PASSWORD: "Ruba*12345"
-      ACCEPT_EULA: "Y"
-      MSSQL_PID: "Express"
+    env_file:
+      - env/sqlServer.env
     ports:
       - "1433:1433"
     healthcheck:
@@ -43,11 +33,8 @@ services:
 
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.13.0
-    environment:
-      - discovery.type=single-node
-      - ES_JAVA_OPTS=-Xms1g -Xmx1g
-      - ELASTIC_PASSWORD=cJKJWoXXTUtXJqif8guOlhpp
-      - xpack.security.enabled=true
+    env_file:
+      - env/elasticSearch.env      
     ports:
       - "9200:9200"
       - "9300:9300"
@@ -58,11 +45,12 @@ services:
     image: docker.elastic.co/kibana/kibana:8.13.0
     ports:
       - "5601:5601"
-    environment:
-      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
-      - ELASTICSEARCH_SERVICEACCOUNTTOKEN=AAEAAWVsYXN0aWMva2liYW5hL2tpYmFuYS10b2tlbjo5Z2E5VUVaSlN4LWVxLVplRng2dEJn
+        
+    env_file:
+      - env/kibana.env
+        
     depends_on:
-      - elasticsearch
+    - elasticsearch
 
 volumes:
   sqlserverdata:
