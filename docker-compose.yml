@@ -1,83 +1,25 @@
-#
-#services:
-#  carrentalsystem.api:
-#    build:
-#      context: .
-#      dockerfile: CarRentalSystem.Api/Dockerfile
-#    ports:
-#      - "8080:8080"
-#    env_file:
-#      - env/CarRentalApiEnv/sqlConnection.env
-#      - env/CarRentalApiEnv/jwtAuthentication.env
-#      - env/CarRentalApiEnv/brevoSettings.env
-#      - env/CarRentalApiEnv/elasticSearch.env
-#      - env/CarRentalApiEnv/client.env
-#    depends_on:
-#      - sqlserver
-#      - elasticsearch
-#        
-#  tests:
-#    build:
-#      context: .
-#      dockerfile: CarRentalSystem.Test/Dockerfile
-#    depends_on:
-#      sqlserver:
-#        condition: service_healthy
-#      carrentalsystem.api:
-#        condition: service_healthy
-#    environment:
-#      - ConnectionStrings__DefaultConnection=Server=sqlserver,1433;Database=TestDb;User Id=sa;Password=Ruba*12345;
-#
-#
-#  sqlserver:
-#    image: mcr.microsoft.com/mssql/server:2022-latest
-#    env_file:
-#      - env/sqlServer.env
-#    ports:
-#      - "1433:1433"
-#    healthcheck:
-#      test: [ "CMD", "/opt/mssql-tools/bin/sqlcmd", "-S", "localhost", "-U", "sa", "-P", "Ruba*12345", "-Q", "SELECT 1" ]
-#      interval: 10s
-#      timeout: 5s
-#      retries: 10
-#      
-#    volumes:
-#      - sqlserverdata:/var/opt/mssql
-#
-#  elasticsearch:
-#    image: docker.elastic.co/elasticsearch/elasticsearch:8.13.0
-#    env_file:
-#      - env/elasticSearch.env      
-#    ports:
-#      - "9200:9200"
-#      - "9300:9300"
-#    volumes:
-#      - elasticsearchdata:/usr/share/elasticsearch/data
-#
-#  kibana:
-#    image: docker.elastic.co/kibana/kibana:8.13.0
-#    ports:
-#      - "5601:5601"
-#        
-#    env_file:
-#      - env/kibana.env
-#        
-#    depends_on:
-#    - elasticsearch
-#
-#volumes:
-#  sqlserverdata:
-#  elasticsearchdata:
-
-
 
 services:
+  carrentalsystem.api:
+    build:
+      context: .
+      dockerfile: CarRentalSystem.Api/Dockerfile
+    ports:
+      - "8080:8080"
+    env_file:
+      - env/CarRentalApiEnv/sqlConnection.env
+      - env/CarRentalApiEnv/jwtAuthentication.env
+      - env/CarRentalApiEnv/brevoSettings.env
+      - env/CarRentalApiEnv/elasticSearch.env
+      - env/CarRentalApiEnv/client.env
+    depends_on:
+      - sqlserver
+      - elasticsearch
+
   sqlserver:
     image: mcr.microsoft.com/mssql/server:2022-latest
-    environment:
-      SA_PASSWORD: "YourStrong!Passw0rd"
-      ACCEPT_EULA: "Y"
-      MSSQL_PID: "Express"
+    env_file:
+      - env/sqlServer.env
     ports:
       - "1433:1433"
     healthcheck:
@@ -86,9 +28,10 @@ services:
       timeout: 5s
       retries: 20
       start_period: 60s
+
     volumes:
       - sqlserverdata:/var/opt/mssql
-  
+        
   tests:
     build:
       context: .
@@ -97,7 +40,30 @@ services:
       sqlserver:
         condition: service_healthy
     environment:
-      - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=TestCarRentalSystem;User ID=sa;Password=YourStrong!Passw0rd;TrustServerCertificate=true;
+      - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=TestCarRentalSystem;User ID=sa;Password=Ruba*12345;TrustServerCertificate=true;
+
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.13.0
+    env_file:
+      - env/elasticSearch.env      
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    volumes:
+      - elasticsearchdata:/usr/share/elasticsearch/data
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.13.0
+    ports:
+      - "5601:5601"
+
+    env_file:
+      - env/kibana.env
+
+    depends_on:
+    - elasticsearch
 
 volumes:
   sqlserverdata:
+  elasticsearchdata:
