@@ -8,6 +8,7 @@ using CarRentalSystem.Db.Repositories.Interfaces;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
+using Xunit.Abstractions;
 
 namespace CarRentalSystem.Test.Controllers;
 
@@ -18,9 +19,11 @@ public class ResetPasswordControllerTest
     private readonly Mock<IResetTokenRepository> _tokenRepositoryMock;
     private readonly ResetPasswordController _controller;
     private readonly IFixture _fixture;
+    private readonly ITestOutputHelper _output;
 
-    public ResetPasswordControllerTest()
+    public ResetPasswordControllerTest(ITestOutputHelper output)
     {
+        _output = output;
         _fixture = new Fixture().Customize(new AutoMoqCustomization());
         _fixture.Behaviors.Remove(new ThrowingRecursionBehavior());
         _fixture.Behaviors.Add(new OmitOnRecursionBehavior());
@@ -33,11 +36,15 @@ public class ResetPasswordControllerTest
             _emailServiceMock.Object,
             _userRepositoryMock.Object,
             _tokenRepositoryMock.Object);
+        
+        output.WriteLine("Test initialized");
     }
 
     [Fact]
     public async Task ForgotPassword_WithValidEmail_SendsResetEmail()
     {
+        _output.WriteLine("Starting test: ForgotPassword_WithValidEmail_SendsResetEmail");
+
         // Arrange
         var email = _fixture.Create<string>();
         var testUser = new User { Email = email };
