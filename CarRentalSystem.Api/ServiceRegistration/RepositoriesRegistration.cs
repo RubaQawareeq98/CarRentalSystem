@@ -6,7 +6,7 @@ using CarRentalSystem.Db.Repositories.Interfaces;
 
 namespace CarRentalSystem.Api.ServiceRegistration;
 
-public static class AddServices
+public static class RepositoriesRegistration
 {
     public static void RegisterServices(this IServiceCollection services)
     {

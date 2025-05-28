@@ -3,6 +3,8 @@ using CarRentalSystem.Db;
 using CarRentalSystem.Db.Models;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.VisualStudio.TestPlatform.TestHost;
+using Program = CarRentalSystem.Api.Program;
 
 namespace CarRentalSystem.Test.Shared;
 

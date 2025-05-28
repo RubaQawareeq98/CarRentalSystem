@@ -11,7 +11,7 @@ using FluentValidation.AspNetCore;
 
 namespace CarRentalSystem.Api.ServiceRegistration;
 
-public static class AddValidators
+public static class ValidatorsRegistration
 {
     public static void RegisterValidators(this IServiceCollection services)
     {

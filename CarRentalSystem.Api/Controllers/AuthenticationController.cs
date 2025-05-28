@@ -10,7 +10,7 @@ namespace CarRentalSystem.Api.Controllers;
 public class AuthenticationController(
     IUserService userService,
     IJwtTokenGeneratorService jwtTokenGeneratorService,
-    JwtConfiguration jwtConfiguration) : ControllerBase
+    JwtConfigurations jwtConfigurations) : ControllerBase
 {
 
     [HttpPost("sign-in")]
@@ -23,11 +23,11 @@ public class AuthenticationController(
         }
 
         var token = await jwtTokenGeneratorService.GenerateToken(user);
-        
+
         var response = new AuthResponseDto
         {
             Token = token,
-            ExpirationInMinutes = jwtConfiguration.TokenExpirationMinutes
+            ExpirationInMinutes = jwtConfigurations.TokenExpirationMinutes
         };
         return Ok(response);
     }

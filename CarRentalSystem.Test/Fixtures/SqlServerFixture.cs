@@ -5,7 +5,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.VisualStudio.TestPlatform.TestHost;
 using Testcontainers.MsSql;
+using Program = CarRentalSystem.Api.Program;
 
 namespace CarRentalSystem.Test.Fixtures;
 

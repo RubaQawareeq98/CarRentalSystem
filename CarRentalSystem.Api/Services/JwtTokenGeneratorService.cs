@@ -7,13 +7,13 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace CarRentalSystem.Api.Services;
 
-public class JwtTokenGeneratorService(JwtConfiguration configuration) : IJwtTokenGeneratorService
+public class JwtTokenGeneratorService(JwtConfigurations configurations) : IJwtTokenGeneratorService
 {
     public Task<string> GenerateToken(User user)
     {
         
         var securityKey = new SymmetricSecurityKey(
-            Convert.FromBase64String(configuration.SecretKey));
+            Convert.FromBase64String(configurations.SecretKey));
             
         var signingCredentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
         
@@ -25,11 +25,11 @@ public class JwtTokenGeneratorService(JwtConfiguration configuration) : IJwtToke
         };
 
         var jwt = new JwtSecurityToken(
-            configuration.Issuer,
-            configuration.Audience,
+            configurations.Issuer,
+            configurations.Audience,
             claimsForToken,
             DateTime.UtcNow,
-            DateTime.UtcNow.AddMinutes(configuration.TokenExpirationMinutes),
+            DateTime.UtcNow.AddMinutes(configurations.TokenExpirationMinutes),
             signingCredentials
         );
         var tokenHandler = new JwtSecurityTokenHandler();

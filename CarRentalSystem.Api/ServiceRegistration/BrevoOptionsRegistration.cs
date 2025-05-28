@@ -2,7 +2,7 @@ using CarRentalSystem.Api.Configurations;
 
 namespace CarRentalSystem.Api.ServiceRegistration;
 
-public static class AddBrevoOptions
+public static class BrevoOptionsRegistration
 {
     public static void RegisterBrevoOptions(this WebApplicationBuilder builder)
     {
