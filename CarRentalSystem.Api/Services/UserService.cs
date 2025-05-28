@@ -1,12 +1,17 @@
 using CarRentalSystem.Api.Mappers.Authentication;
+using CarRentalSystem.Api.Mappers.Users;
 using CarRentalSystem.Api.Models.Authentication;
+using CarRentalSystem.Api.Models.Profile;
 using CarRentalSystem.Api.Services.Interfaces;
 using CarRentalSystem.Db.Models;
 using CarRentalSystem.Db.Repositories.Interfaces;
+using Sieve.Models;
 
 namespace CarRentalSystem.Api.Services;
 
-public class UserService(IUserRepository userRepository, SignupRequestMapper mapToUser) : IUserService
+public class UserService(IUserRepository userRepository,
+    SignupRequestMapper mapToUser,
+    UserProfileMapper profileMapper) : IUserService
 {
     public async Task<User?> GetUserByEmailAsync(string email)
     {
@@ -32,15 +37,16 @@ public class UserService(IUserRepository userRepository, SignupRequestMapper map
         await userRepository.AddUserAsync(user);
     }
 
-    public async Task UpdateUserAsync(User user)
+    public async Task UpdateUserAsync(UpdateProfileBodyDto bodyDto)
     {
-        user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password);
+        var user = profileMapper.UpdateUser(bodyDto);
+        bodyDto.Password = BCrypt.Net.BCrypt.HashPassword(bodyDto.Password);
         await userRepository.UpdateUserAsync(user);
     }
 
-    public async Task<List<User>> GetAllUsersAsync()
+    public async Task<List<User>> GetAllUsersAsync(SieveModel sieveModel)
     {
-        return await userRepository.GetAllUsersAsync();
+        return await userRepository.GetAllUsersAsync(sieveModel);
     }
 
     public async Task<bool> UserExistsAsync(Guid id)

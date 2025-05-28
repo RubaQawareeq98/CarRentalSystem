@@ -1,10 +1,12 @@
 using CarRentalSystem.Db.Models;
 using CarRentalSystem.Db.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Sieve.Models;
+using Sieve.Services;
 
 namespace CarRentalSystem.Db.Repositories;
 
-public class UserRepository (CarRentalSystemDbContext context) : IUserRepository
+public class UserRepository (CarRentalSystemDbContext context, ISieveProcessor sieveProcessor) : IUserRepository
 {
     public async Task<User?> FindUserByEmailAsync(string email)
     {
@@ -31,9 +33,12 @@ public class UserRepository (CarRentalSystemDbContext context) : IUserRepository
         await context.SaveChangesAsync();
     }
 
-    public async Task<List<User>> GetAllUsersAsync()
+    public async Task<List<User>> GetAllUsersAsync(SieveModel sieveModel)
     {
-        return await context.Users.ToListAsync();
+        var query = context.Users.AsQueryable();
+        query = sieveProcessor.Apply(sieveModel, query);
+
+        return await query.ToListAsync();
     }
 
     public async Task<bool> IsEntityExist(Guid id)

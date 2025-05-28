@@ -25,6 +25,7 @@ builder.Services.AddDbContext<CarRentalSystemDbContext>(options =>
 builder.Services.AddSwaggerGen();
 
 
+
 builder.Services.Configure<SieveOptions>(builder.Configuration.GetSection("Sieve"));
 builder.Services.AddScoped<ISieveProcessor, SieveProcessor>();
 
