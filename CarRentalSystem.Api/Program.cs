@@ -2,6 +2,8 @@ using CarRentalSystem.Api.Middlewares;
 using CarRentalSystem.Api.ServiceRegistration;
 using CarRentalSystem.Db;
 using Microsoft.EntityFrameworkCore;
+using Sieve.Models;
+using Sieve.Services;
 
 namespace CarRentalSystem.Api;
 
@@ -29,6 +31,12 @@ public class Program
         builder.Services.AddSwaggerGen();
 
         var app = builder.Build();
+
+
+builder.Services.Configure<SieveOptions>(builder.Configuration.GetSection("Sieve"));
+builder.Services.AddScoped<ISieveProcessor, SieveProcessor>();
+
+var app = builder.Build();
 
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())

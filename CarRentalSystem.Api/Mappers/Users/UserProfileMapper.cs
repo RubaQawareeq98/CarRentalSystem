@@ -8,5 +8,5 @@ namespace CarRentalSystem.Api.Mappers.Users;
 public partial class UserProfileMapper
 {
     public partial ProfileResponseDto ToProfileResponseDto(User user);
-    public partial void UpdateUser(UpdateProfileBodyDto source, User target);
+    public partial User UpdateUser(UpdateProfileBodyDto source);
 }

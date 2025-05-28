@@ -1,24 +1,25 @@
 using CarRentalSystem.Api.Mappers.Users;
 using CarRentalSystem.Api.Models.Profile;
 using CarRentalSystem.Api.Models.Users;
+using CarRentalSystem.Api.Services.Interfaces;
 using CarRentalSystem.Db.Models;
-using CarRentalSystem.Db.Repositories.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Sieve.Models;
 
 namespace CarRentalSystem.Api.Controllers;
 
 [Authorize]
 [Route("api/users")]
 [ApiController]
-public class UserController(IUserRepository userRepository,
+public class UserController(IUserService userService,
     UserProfileMapper mapper,
     UserResponseMapper userResponseMapper) : ControllerBase
 {
     [HttpGet("profile/{userId}")]
     public async Task<ActionResult<User>> GetUser(Guid userId)
     {
-        var user = await userRepository.FindUserByIdAsync(userId);
+        var user = await userService.GetUserByIdAsync(userId);
         if (user is null)
         {
             return NotFound();
@@ -31,22 +32,22 @@ public class UserController(IUserRepository userRepository,
     [HttpPut("profile/{userId}")]
     public async Task<ActionResult> UpdateProfile(Guid userId, UpdateProfileBodyDto bodyDto)
     {
-        var user = await userRepository.FindUserByIdAsync(userId);
+        var user = await userService.GetUserByIdAsync(userId);
         if (user is null)
         {
             return NotFound();
         }
-        mapper.UpdateUser(bodyDto, user);
-        
-        await userRepository.UpdateUserAsync(user);
+
+        user = mapper.UpdateUser(bodyDto);
+        await userService.UpdateUserAsync(user);
         return Ok("Date updated successfully");
     }
     
     [Authorize(Roles = "Admin")]
     [HttpGet]
-    public async Task<ActionResult<List<UserResponseDto>>> GetAllUsers()
+    public async Task<ActionResult<List<UserResponseDto>>> GetAllUsers([FromQuery] SieveModel sieveModel)
     {
-        var users = await userRepository.GetAllUsersAsync();
+        var users = await userService.GetAllUsersAsync(sieveModel);
         var usersResponse = userResponseMapper.ToUserResponseDtos(users);
         return Ok(usersResponse);
     }
