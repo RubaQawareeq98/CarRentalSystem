@@ -30,13 +30,12 @@ public class Program
 
         builder.Services.AddSwaggerGen();
 
+
+
+        builder.Services.Configure<SieveOptions>(builder.Configuration.GetSection("Sieve"));
+        builder.Services.AddScoped<ISieveProcessor, SieveProcessor>();
+
         var app = builder.Build();
-
-
-builder.Services.Configure<SieveOptions>(builder.Configuration.GetSection("Sieve"));
-builder.Services.AddScoped<ISieveProcessor, SieveProcessor>();
-
-var app = builder.Build();
 
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
