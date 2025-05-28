@@ -19,8 +19,9 @@ public static class AddServices
         services.AddScoped<IEmailService, EmailService>();
         services.AddScoped<IResetTokenService, ResetTokenService>();
         services.AddScoped<IResetTokenRepository, ResetTokenRepository>();
-        services.AddScoped<IUserService, IUserService>();
+        services.AddScoped<IUserService, UserService>();
         services.AddScoped<IResetPasswordService, ResetPasswordService>();
         services.AddScoped<ICarService, CarService>();
+        services.AddScoped<IReservationService, ReservationService>();
     }
 }
