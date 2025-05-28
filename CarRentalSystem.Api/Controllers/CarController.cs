@@ -76,6 +76,8 @@ public class CarController(
     public async Task<ActionResult> UpdateCar(Guid carId, CarRequestDto carRequestDto)
     {
         var car = carRequestMapper.ToCar(carRequestDto);
+        car.Id = carId;
+        
         var isSuccess = await carService.UpdateCarAsync(car);
         
         return isSuccess? Ok("Car updated successfully") : NotFound();

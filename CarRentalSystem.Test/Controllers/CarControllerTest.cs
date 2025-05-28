@@ -48,6 +48,7 @@ public class CarControllerTest : IClassFixture<SqlServerFixture>
         // Arrange
         var cars = _fixture.Build<Car>()
             .Without(c => c.Reservations)
+            .With(c => c.IsAvailable, true)
             .CreateMany(5)
             .ToList();
         
@@ -55,27 +56,12 @@ public class CarControllerTest : IClassFixture<SqlServerFixture>
         await CarTestUtilities.AddTestCars(cars, _factory);
         
         // Act
-        var response = await _client.GetAsync($"{BaseUrl}?pageNumber=1&pageSize=5");
+        var response = await _client.GetAsync($"{BaseUrl}");
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
         var responseCars = await response.Content.ReadFromJsonAsync<List<CarResponseDto>>();
         responseCars.Should().NotBeNull().And.HaveCount(5);
-    }
-
-    [Theory]
-    [InlineData(1, 0)]
-    [InlineData(-1, 5)]
-    public async Task GetCars_InvalidPagination_ShouldReturnsBadRequest(int pageNumber, int pageSize)
-    {
-        // Arrange
-        TestAuthenticationHeader.SetTestAuthHeader(_client, _fixture.Create<Guid>(), UserRole.Customer);
-
-        // Act
-        var response = await _client.GetAsync($"{BaseUrl}?pageNumber={pageNumber}&pageSize={pageSize}");
-
-        // Assert
-        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }
 
     [Fact]
@@ -114,8 +100,8 @@ public class CarControllerTest : IClassFixture<SqlServerFixture>
         var searchDto = _fixture.Build<CarSearchDto>()
             .With(s => s.StartDate, DateTime.Today)
             .With(s => s.EndDate, DateTime.Today.AddDays(3))
-            .With(s => s.MinPrice, 10000m)
-            .With(s => s.MaxPrice, 20000m)
+            .With(s => s.MinPrice, 10000)
+            .With(s => s.MaxPrice, 20000)
             .With(s => s.MinYear, 2020)
             .With(s => s.MaxYear, 2023) 
             .Create();
@@ -133,9 +119,11 @@ public class CarControllerTest : IClassFixture<SqlServerFixture>
             .ToList();
 
         var cars = _fixture.Build<Car>()
+            .With(c => c.IsAvailable, true)
             .Without(c => c.Reservations)
             .CreateMany(3)
             .ToList();
+
         
         TestAuthenticationHeader.SetTestAuthHeader(_client, _fixture.Create<Guid>(), UserRole.Customer);
 
@@ -143,9 +131,10 @@ public class CarControllerTest : IClassFixture<SqlServerFixture>
 
         // Act
         var query = $"""
-                     ?Color={searchDto.Color}&Brand={searchDto.Brand}&MinYear={searchDto.MinYear}&MaxYear={searchDto.MaxYear}&Model={searchDto.Model}&
-                     Location={searchDto.Location}&MinPrice={searchDto.MinPrice}&MaxPrice={searchDto.MaxPrice}&StartDate={searchDto.StartDate}&EndDate={searchDto.EndDate}
-                     """;
+            ?filters=Color=={searchDto.Color}&Brand=={searchDto.Brand}&Model=={searchDto.Model}&Location=={searchDto.Location}&
+            Year>={searchDto.MinYear}&Year<={searchDto.MaxYear}&Price>={searchDto.MinPrice}&Price<={searchDto.MaxPrice}
+            """;
+
         var response = await _client.GetAsync($"{BaseUrl}/search{query}");
 
         // Assert
@@ -165,7 +154,7 @@ public class CarControllerTest : IClassFixture<SqlServerFixture>
         var response = await _client.PostAsJsonAsync(BaseUrl, carRequest);
 
         // Assert
-        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        response.StatusCode.Should().Be(HttpStatusCode.Created);
     }
 
     [Fact]

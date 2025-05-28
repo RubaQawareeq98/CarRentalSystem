@@ -38,7 +38,7 @@ public class UserController(IUserService userService,
             return NotFound();
         }
 
-        user = mapper.UpdateUser(bodyDto);
+        mapper.UpdateUser(bodyDto, user);
         await userService.UpdateUserAsync(user);
         return Ok("Date updated successfully");
     }
