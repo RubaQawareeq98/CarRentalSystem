@@ -1,7 +1,11 @@
 using CarRentalSystem.Api.Models.Authentication;
 using CarRentalSystem.Api.Models.Cars;
 using CarRentalSystem.Api.Models.Reservations;
+using CarRentalSystem.Api.Models.Users;
 using CarRentalSystem.Api.Validators;
+using CarRentalSystem.Api.Validators.Cars;
+using CarRentalSystem.Api.Validators.Reservations;
+using CarRentalSystem.Api.Validators.Users;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 
@@ -17,5 +21,7 @@ public static class AddValidators
         services.AddScoped<IValidator<CarRequestDto>, CarRequestBodyValidator>();
         services.AddScoped<IValidator<AddReservationBodyDto>, AddReservationBodyValidator>();
         services.AddScoped<IValidator<LoginRequestBodyDto>, LoginRequestBodyValidator>();
+        services.AddScoped<IValidator<ForgotPasswordDto>, ForgotPasswordValidator>();
+        services.AddScoped<IValidator<ResetPasswordDto>, ResetPasswordDtoValidator>();
     }
 }

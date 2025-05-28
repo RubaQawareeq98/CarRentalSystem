@@ -1,7 +1,7 @@
 using CarRentalSystem.Api.Models.Reservations;
 using FluentValidation;
 
-namespace CarRentalSystem.Api.Validators;
+namespace CarRentalSystem.Api.Validators.Reservations;
 
 public class AddReservationBodyValidator : AbstractValidator<AddReservationBodyDto>
 {
