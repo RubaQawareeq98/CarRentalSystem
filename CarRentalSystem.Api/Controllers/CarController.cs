@@ -1,7 +1,7 @@
 using CarRentalSystem.Api.Mappers.Cars;
 using CarRentalSystem.Api.Models.Cars;
+using CarRentalSystem.Api.Services.Interfaces;
 using CarRentalSystem.Db.Models;
-using CarRentalSystem.Db.Repositories.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Sieve.Models;
@@ -11,7 +11,8 @@ namespace CarRentalSystem.Api.Controllers;
 [Authorize]
 [Route("api/cars")]
 [ApiController]
-public class CarController(ICarRepository carRepository,
+public class CarController(
+    ICarService carService,
     CarResponseMapper mapper,
     CarRequestMapper carRequestMapper) : ControllerBase
 {
@@ -19,16 +20,28 @@ public class CarController(ICarRepository carRepository,
     [HttpGet]
     public async Task<ActionResult<List<CarResponseDto>>> GetCars([FromQuery] SieveModel sieveModel)
     {
-        var cars = await carRepository.GetCarsAsync(sieveModel);
+        var cars = await carService.GetAllCarsAsync(sieveModel);
         var carsResponse = mapper.ToCarResponseDto(cars);
         
         return Ok(carsResponse);
     }
 
+    [HttpGet("car/{id}")]
+    public async Task<ActionResult<CarResponseDto>> GetCar(Guid id)
+    {
+        var car = await carService.GetCarByIdAsync(id);
+        if (car is null)
+        {
+            return NotFound();
+        }
+        
+        return Ok(car);
+    }
+
     [HttpGet("available")]
     public async Task<ActionResult<List<CarResponseDto>>> GetAvailableCars([FromQuery] SieveModel sieveModel)
     {
-        var cars = await carRepository.GetAvailableCarsAsync(sieveModel);
+        var cars = await carService.GetAvailableCarsAsync(sieveModel);
         var carsResponse = mapper.ToCarResponseDto(cars);
         
         return Ok(carsResponse);
@@ -37,7 +50,7 @@ public class CarController(ICarRepository carRepository,
     [HttpGet("search")]
     public async Task<ActionResult<List<CarResponseDto>>> GetSearchCars([FromQuery] CarSearchDto carSearchDto)
     {
-        var filteredCars = await carRepository.GetFilteredCarsAsync(carSearchDto);
+        var filteredCars = await carService.SearchCarsAsync(carSearchDto);
         var carsResponse = mapper.ToCarResponseDto(filteredCars);
     
         return Ok(carsResponse);
@@ -49,23 +62,24 @@ public class CarController(ICarRepository carRepository,
     public async Task<ActionResult> AddCar(CarRequestDto carRequestDto)
     {
         var car = carRequestMapper.ToCar(carRequestDto);
-        await carRepository.AddCarAsync(car);
+        await carService.AddCarAsync(car);
         
-        return Ok("Car added successfully");
+        return CreatedAtAction(
+            nameof(GetCar),
+            new { id = car.Id },
+            car
+        );
     }
 
     [Authorize(Roles = "Admin")]
     [HttpPut("{carId}")]
     public async Task<ActionResult> UpdateCar(Guid carId, CarRequestDto carRequestDto)
     {
-        var isCarExist = await carRepository.IsCarExist(carId);
-        if (!isCarExist)
-        {
-            return NotFound("Car with given id does not exist");
-        }
         var car = carRequestMapper.ToCar(carRequestDto);
-        await carRepository.UpdateCarAsync(car);
+        car.Id = carId;
         
-        return Ok("Car updated successfully");
+        var isSuccess = await carService.UpdateCarAsync(car);
+        
+        return isSuccess? Ok("Car updated successfully") : NotFound();
     }
 }

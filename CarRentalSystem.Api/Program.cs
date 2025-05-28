@@ -7,6 +7,7 @@ using Serilog;
 using Sieve.Models;
 using Sieve.Services;
 
+
 namespace CarRentalSystem.Api;
 
 public class Program
@@ -52,6 +53,11 @@ public class Program
                 )
         );
         builder.Services.AddSwaggerGen();
+
+
+
+        builder.Services.Configure<SieveOptions>(builder.Configuration.GetSection("Sieve"));
+        builder.Services.AddScoped<ISieveProcessor, SieveProcessor>();
 
         var app = builder.Build();
 

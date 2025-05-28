@@ -1,6 +1,7 @@
 using Sieve.Attributes;
 
 namespace CarRentalSystem.Db.Models;
+
 public class Car
 {
     public Guid Id { get; set; }

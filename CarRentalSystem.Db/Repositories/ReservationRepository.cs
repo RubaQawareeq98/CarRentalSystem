@@ -1,10 +1,12 @@
 using CarRentalSystem.Db.Models;
 using CarRentalSystem.Db.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Sieve.Models;
+using Sieve.Services;
 
 namespace CarRentalSystem.Db.Repositories;
 
-public class ReservationRepository(CarRentalSystemDbContext context) : IReservationRepository
+public class ReservationRepository(CarRentalSystemDbContext context, ISieveProcessor sieveProcessor) : IReservationRepository
 {
     public async Task AddReservationAsync(Reservation? reservation)
     {
@@ -18,13 +20,14 @@ public class ReservationRepository(CarRentalSystemDbContext context) : IReservat
         await context.SaveChangesAsync();
     }
 
-    public async Task<List<Reservation?>> GetUserReservationsAsync(Guid userId, int pageNumber, int pageSize)
+    public async Task<List<Reservation?>> GetUserReservationsAsync(Guid userId, SieveModel sieveModel)
     {
-        return await context.Reservations
+        var query =  context.Reservations
             .Where(r => r != null && r.UserId == userId)
-            .Skip((pageNumber - 1) * pageSize)
-            .Take(pageSize)
-            .ToListAsync();
+            .AsQueryable();
+            
+        query = sieveProcessor.Apply(sieveModel, query);
+        return await query.ToListAsync();
     }
 
     public async Task<List<Reservation?>> GetAllReservationsAsync()

@@ -111,29 +111,14 @@ public class ReservationControllerTest : IClassFixture<SqlServerFixture>
         TestAuthenticationHeader.SetTestAuthHeader(_client, user.Id, UserRole.Customer);
 
         // Act
-        var response = await _client.GetAsync($"{BaseUrl}/user/{user.Id}?pageNumber=1&pageSize=10");
+        var response = await _client.GetAsync($"{BaseUrl}/user/{user.Id}");
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
         var responseReservations = await response.Content.ReadFromJsonAsync<List<Reservation>>();
         responseReservations.Should().NotBeNull().And.HaveCount(3);
     }
-
-    [Theory]
-    [InlineData(0, 5)]
-    [InlineData(1, 0)]
-    public async Task GetUserReservations_InvalidPagination_ShouldReturnBadRequest(int pageNumber, int pageSize)
-    {
-        // Arrange
-        var userId = _fixture.Create<Guid>();
-        TestAuthenticationHeader.SetTestAuthHeader(_client, userId, UserRole.Customer);
-
-        // Act
-        var response = await _client.GetAsync($"{BaseUrl}/user/{userId}?pageNumber={pageNumber}&pageSize={pageSize}");
-
-        // Assert
-        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
-    }
+    
 
     [Fact]
     public async Task UpdateReservation_ValidRequest_ShouldReturnNoContent()

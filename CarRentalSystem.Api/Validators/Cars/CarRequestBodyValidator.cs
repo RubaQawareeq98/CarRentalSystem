@@ -1,7 +1,7 @@
 using CarRentalSystem.Api.Models.Cars;
 using FluentValidation;
 
-namespace CarRentalSystem.Api.Validators;
+namespace CarRentalSystem.Api.Validators.Cars;
 
 public class CarRequestBodyValidator : AbstractValidator<CarRequestDto>
 {

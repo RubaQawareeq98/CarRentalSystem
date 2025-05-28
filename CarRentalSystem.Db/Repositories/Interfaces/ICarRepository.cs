@@ -12,4 +12,5 @@ public interface ICarRepository
     Task AddCarAsync(Car car);
     Task UpdateCarAsync(Car car);
     Task<bool> IsCarExist(Guid carId);
+    Task<Car> GetCarById(Guid id);
 }

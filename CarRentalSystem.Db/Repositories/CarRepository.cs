@@ -68,4 +68,9 @@ public class CarRepository(CarRentalSystemDbContext context, ISieveProcessor sie
     {
         return await context.Cars.AnyAsync(c => c.Id == carId);
     }
+
+    public async Task<Car> GetCarById(Guid id)
+    {
+        return await context.Cars.FirstAsync(c => c.Id == id);
+    }
 }
