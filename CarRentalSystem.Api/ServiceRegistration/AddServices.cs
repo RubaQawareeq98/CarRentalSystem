@@ -21,5 +21,6 @@ public static class AddServices
         services.AddScoped<IResetTokenRepository, ResetTokenRepository>();
         services.AddScoped<IUserService, IUserService>();
         services.AddScoped<IResetPasswordService, ResetPasswordService>();
+        services.AddScoped<ICarService, CarService>();
     }
 }
