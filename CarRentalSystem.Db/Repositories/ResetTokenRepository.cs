@@ -16,6 +16,5 @@ public class ResetTokenRepository(CarRentalSystemDbContext context) : IResetToke
     {
        return await context.PasswordResetTokens
             .FirstOrDefaultAsync(t => t.Email == email && t.Token == token);
-
     }
 }

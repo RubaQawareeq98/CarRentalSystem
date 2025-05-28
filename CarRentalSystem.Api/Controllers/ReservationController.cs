@@ -19,7 +19,7 @@ public class ReservationController(IReservationService reservationService) : Con
     }
     
     [HttpGet("user/{userId}")]
-    public async Task<ActionResult<List<ReservationResponseDto>>> GetUserReservations(Guid userId, SieveModel sieveModel)
+    public async Task<ActionResult<List<ReservationResponseDto>>> GetUserReservations(Guid userId,[FromQuery] SieveModel sieveModel)
     {
         var reservations = await reservationService.GetUserReservationsAsync(userId, sieveModel);
         return Ok(reservations);
