@@ -25,4 +25,9 @@ public class ResetTokenService(IResetTokenRepository resetTokenRepository) : IRe
         
         return encodedToken;
     }
+
+    public async Task<PasswordResetToken?> GetResetTokenAsync(string email, string token)
+    {
+        return await resetTokenRepository.GetResetTokenAsync(email, token);
+    }
 }

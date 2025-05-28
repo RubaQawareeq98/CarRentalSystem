@@ -1,7 +1,5 @@
 using CarRentalSystem.Api.Mappers.Authentication;
-using CarRentalSystem.Api.Mappers.Users;
 using CarRentalSystem.Api.Models.Authentication;
-using CarRentalSystem.Api.Models.Profile;
 using CarRentalSystem.Api.Services.Interfaces;
 using CarRentalSystem.Db.Models;
 using CarRentalSystem.Db.Repositories.Interfaces;
@@ -10,8 +8,7 @@ using Sieve.Models;
 namespace CarRentalSystem.Api.Services;
 
 public class UserService(IUserRepository userRepository,
-    SignupRequestMapper mapToUser,
-    UserProfileMapper profileMapper) : IUserService
+    SignupRequestMapper mapToUser) : IUserService
 {
     public async Task<User?> GetUserByEmailAsync(string email)
     {
@@ -37,10 +34,9 @@ public class UserService(IUserRepository userRepository,
         await userRepository.AddUserAsync(user);
     }
 
-    public async Task UpdateUserAsync(UpdateProfileBodyDto bodyDto)
+    public async Task UpdateUserAsync(User user)
     {
-        var user = profileMapper.UpdateUser(bodyDto);
-        bodyDto.Password = BCrypt.Net.BCrypt.HashPassword(bodyDto.Password);
+        user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password);
         await userRepository.UpdateUserAsync(user);
     }
 

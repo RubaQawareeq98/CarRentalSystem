@@ -3,7 +3,6 @@ using CarRentalSystem.Api.Models.Profile;
 using CarRentalSystem.Api.Models.Users;
 using CarRentalSystem.Api.Services.Interfaces;
 using CarRentalSystem.Db.Models;
-using CarRentalSystem.Db.Repositories.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Sieve.Models;
@@ -38,8 +37,9 @@ public class UserController(IUserService userService,
         {
             return NotFound();
         }
-        
-        await userService.UpdateUserAsync(bodyDto);
+
+        user = mapper.UpdateUser(bodyDto);
+        await userService.UpdateUserAsync(user);
         return Ok("Date updated successfully");
     }
     

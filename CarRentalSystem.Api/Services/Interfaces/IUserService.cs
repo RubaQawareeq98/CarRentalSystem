@@ -12,7 +12,7 @@ public interface IUserService
     Task<User?> GetUserByIdAsync(Guid userId);
     Task<User?> AuthenticateUserAsync(string email, string password);
     Task RegisterUserAsync(User user);
-    Task UpdateUserAsync(UpdateProfileBodyDto bodyDto);
+    Task UpdateUserAsync(User user);
     Task<List<User>> GetAllUsersAsync(SieveModel sieveModel);
     Task<bool> UserExistsAsync(Guid id);
     Task<(bool Success, string Message)> SignupAsync(SignupRequestBodyDto request);
