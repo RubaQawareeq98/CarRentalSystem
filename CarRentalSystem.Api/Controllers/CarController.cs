@@ -4,43 +4,31 @@ using CarRentalSystem.Db.Models;
 using CarRentalSystem.Db.Repositories.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Sieve.Models;
 
 namespace CarRentalSystem.Api.Controllers;
 
-// [Authorize]
+[Authorize]
 [Route("api/cars")]
 [ApiController]
 public class CarController(ICarRepository carRepository,
     CarResponseMapper mapper,
     CarRequestMapper carRequestMapper) : ControllerBase
 {
-    private int _maxPageSize = 80;
 
     [HttpGet]
-    public async Task<ActionResult<List<CarResponseDto>>> GetCars(int pageNumber = 1, int pageSize = 10)
+    public async Task<ActionResult<List<CarResponseDto>>> GetCars([FromQuery] SieveModel sieveModel)
     {
-        if (pageNumber < 1 || pageSize < 1)
-        {
-            return BadRequest("Page number and page size must be greater than 0");
-        }
-        _maxPageSize = Math.Min(_maxPageSize, pageSize);
-        
-        var cars = await carRepository.GetCarsAsync(pageNumber, pageSize);
+        var cars = await carRepository.GetCarsAsync(sieveModel);
         var carsResponse = mapper.ToCarResponseDto(cars);
         
         return Ok(carsResponse);
     }
 
     [HttpGet("available")]
-    public async Task<ActionResult<List<CarResponseDto>>> GetAvailableCars(int pageNumber = 1, int pageSize = 10)
+    public async Task<ActionResult<List<CarResponseDto>>> GetAvailableCars([FromQuery] SieveModel sieveModel)
     {
-        if (pageNumber < 1 || pageSize < 1)
-        {
-            return BadRequest("Page number and page size must be greater than 0");
-        }
-        _maxPageSize = Math.Min(_maxPageSize, pageSize);
-        
-        var cars = await carRepository.GetAvailableCarsAsync(pageNumber, pageSize);
+        var cars = await carRepository.GetAvailableCarsAsync(sieveModel);
         var carsResponse = mapper.ToCarResponseDto(cars);
         
         return Ok(carsResponse);
@@ -49,12 +37,12 @@ public class CarController(ICarRepository carRepository,
     [HttpGet("search")]
     public async Task<ActionResult<List<CarResponseDto>>> GetSearchCars([FromQuery] CarSearchDto carSearchDto)
     {
-
         var filteredCars = await carRepository.GetFilteredCarsAsync(carSearchDto);
         var carsResponse = mapper.ToCarResponseDto(filteredCars);
-        
+    
         return Ok(carsResponse);
     }
+
     
     [Authorize(Roles = "Admin")]
     [HttpPost]

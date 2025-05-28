@@ -16,5 +16,6 @@ public static class AddValidators
         services.AddScoped<IValidator<SignupRequestBodyDto>, SignupRequestBodyValidator>();
         services.AddScoped<IValidator<CarRequestDto>, CarRequestBodyValidator>();
         services.AddScoped<IValidator<AddReservationBodyDto>, AddReservationBodyValidator>();
+        services.AddScoped<IValidator<LoginRequestBodyDto>, LoginRequestBodyValidator>();
     }
 }
