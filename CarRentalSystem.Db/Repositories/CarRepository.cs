@@ -47,7 +47,7 @@ public class CarRepository(CarRentalSystemDbContext context, ISieveProcessor sie
             .Include(c => c.Reservations) 
             .FirstOrDefaultAsync(c => c.Id == carId);
 
-        return car is not null && IsCarAvailable(car, startDate, endDate);
+        return car is not null && IsCarAvailableInDateRange(car, startDate, endDate);
     }
 
 
@@ -73,7 +73,7 @@ public class CarRepository(CarRentalSystemDbContext context, ISieveProcessor sie
         return await context.Cars.FirstAsync(c => c.Id == id);
     }
     
-    private static bool IsCarAvailable(Car car, DateTime startDate, DateTime endDate)
+    private static bool IsCarAvailableInDateRange(Car car, DateTime startDate, DateTime endDate)
     {
         return car is { IsAvailable: true, Reservations: not null } &&
                !car.Reservations.Any(r =>
