@@ -15,13 +15,13 @@ public class Program
 
         // Add services to the container.
 
-builder.Services.RegisterServices();
-builder.Services.AddControllers();
-builder.RegisterJwtParams();
-builder.RegisterBrevoOptions();
-builder.Services.RegisterMappers();
-builder.Services.RegisterValidators();
-builder.Services.RegisterContexts();
+        builder.Services.RegisterServices();
+        builder.Services.AddControllers();
+        builder.RegisterJwtParams();
+        builder.RegisterBrevoOptions();
+        builder.Services.RegisterMappers();
+        builder.Services.RegisterValidators();
+        builder.Services.RegisterContexts();
 
         // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
         builder.Services.AddOpenApi();

@@ -25,8 +25,6 @@ public class AuthenticationControllerTests : IClassFixture<SqlServerFixture>
         _fixture.Behaviors.Add(new OmitOnRecursionBehavior());
         _client = sqlServerFixture.Client;
         _factory = sqlServerFixture.Factory;
-        
-        sqlServerFixture.ClearDatabaseAsync().Wait();
     }
 
     [Fact]
