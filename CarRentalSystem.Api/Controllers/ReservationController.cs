@@ -27,7 +27,7 @@ public class ReservationController(IReservationService reservationService) : Con
         return Ok(reservations);
     }
 
-    [HttpPut("reservation/{reservationId}")]
+    [HttpPut("{reservationId}")]
     public async Task<ActionResult> UpdateReservation(Guid reservationId, UpdateReservationDto dto)
     {
         var isSuccess = await reservationService.UpdateReservationAsync(reservationId, dto);

@@ -26,7 +26,7 @@ public class CarController(
         return Ok(carsResponse);
     }
 
-    [HttpGet("car/{id}")]
+    [HttpGet("{id}")]
     public async Task<ActionResult<CarResponseDto>> GetCar(Guid id)
     {
         var car = await carService.GetCarByIdAsync(id);
@@ -48,9 +48,9 @@ public class CarController(
     }
 
     [HttpGet("search")]
-    public async Task<ActionResult<List<CarResponseDto>>> GetSearchCars([FromQuery] CarSearchDto carSearchDto)
+    public async Task<ActionResult<List<CarResponseDto>>> GetSearchCars([FromQuery] CarSearchDto carSearchRequest)
     {
-        var filteredCars = await carService.SearchCarsAsync(carSearchDto);
+        var filteredCars = await carService.SearchCarsAsync(carSearchRequest);
         var carsResponse = mapper.ToCarResponseDto(filteredCars);
     
         return Ok(carsResponse);
@@ -72,10 +72,11 @@ public class CarController(
     }
 
     [Authorize(Roles = "Admin")]
-    [HttpPut("{carId}")]
-    public async Task<ActionResult> UpdateCar(Guid carId, CarRequestDto carRequestDto)
+    [HttpPatch("{carId}")]
+    public async Task<ActionResult> UpdateCar(Guid carId,[FromBody] CarRequestDto carRequestDto)
     {
         var car = carRequestMapper.ToCar(carRequestDto);
+        car.Id = carId;
         var isSuccess = await carService.UpdateCarAsync(car);
         
         return isSuccess? Ok("Car updated successfully") : NotFound();
