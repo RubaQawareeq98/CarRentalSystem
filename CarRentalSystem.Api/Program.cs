@@ -23,6 +23,7 @@ public class Program
         builder.RegisterBrevoOptions();
         builder.Services.RegisterMappers();
         builder.Services.RegisterValidators();
+        builder.Services.RegisterContexts();
 
         var elasticSearchConfig = builder.Configuration
             .GetSection("ElasticSearch")

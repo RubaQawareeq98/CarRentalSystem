@@ -6,22 +6,27 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using System.Net;
 using System.Net.Http.Json;
 using CarRentalSystem.Api;
+using CarRentalSystem.Db;
 using CarRentalSystem.Db.Enums;
 using CarRentalSystem.Test.Fixtures;
 using CarRentalSystem.Test.Handlers;
+using CarRentalSystem.Test.Helpers;
 using CarRentalSystem.Test.Shared;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.TestHost;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace CarRentalSystem.Test.Controllers;
 
-public class ReservationControllerTest : IClassFixture<SqlServerFixture>
+public class ReservationControllerTest : IClassFixture<SqlServerFixture>,IAsyncLifetime
 {
     private readonly HttpClient _client;
     private readonly WebApplicationFactory<Program> _factory;
     private const string BaseUrl = "/api/reservations";
     private readonly IFixture _fixture = new Fixture();
+    private IDbContextTransaction _transaction;
 
     public ReservationControllerTest(SqlServerFixture sqlServerFixture)
     {
@@ -38,8 +43,6 @@ public class ReservationControllerTest : IClassFixture<SqlServerFixture>
                         "TestAuthScheme", _ => { });
             });
         }).CreateClient();
-        
-        sqlServerFixture.ClearDatabaseAsync().Wait();
     }
 
     [Fact]
@@ -67,7 +70,7 @@ public class ReservationControllerTest : IClassFixture<SqlServerFixture>
         var response = await _client.PostAsJsonAsync(BaseUrl, reservationDto);
 
         // Assert
-        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        response.StatusCode.Should().Be(HttpStatusCode.Created);
     }
 
     [Fact]
@@ -142,7 +145,7 @@ public class ReservationControllerTest : IClassFixture<SqlServerFixture>
         TestAuthenticationHeader.SetTestAuthHeader(_client, user.Id, UserRole.Customer);
 
         // Act
-       var response = await _client.PutAsJsonAsync($"{BaseUrl}/reservation/{reservation.Id}", updateDto);
+       var response = await _client.PutAsJsonAsync($"{BaseUrl}/{reservation.Id}", updateDto);
 
         // Assert
        response.StatusCode.Should().Be(HttpStatusCode.NoContent);
@@ -199,5 +202,12 @@ public class ReservationControllerTest : IClassFixture<SqlServerFixture>
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.Forbidden);
+    }
+
+    public Task InitializeAsync() => Task.CompletedTask;
+
+    public async Task DisposeAsync()
+    {
+        await DatabaseCleaner.ClearDatabaseAsync(_factory);
     }
 }

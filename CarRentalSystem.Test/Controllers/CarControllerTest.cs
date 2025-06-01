@@ -9,6 +9,7 @@ using System.Net.Http.Json;
 using CarRentalSystem.Api;
 using CarRentalSystem.Db.Enums;
 using CarRentalSystem.Test.Handlers;
+using CarRentalSystem.Test.Helpers;
 using CarRentalSystem.Test.Shared;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.TestHost;
@@ -16,7 +17,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace CarRentalSystem.Test.Controllers;
 
-public class CarControllerTest : IClassFixture<SqlServerFixture>
+public class CarControllerTest : IClassFixture<SqlServerFixture>, IAsyncLifetime
 {
     private readonly HttpClient _client;
     private readonly IFixture _fixture = new Fixture();
@@ -38,8 +39,6 @@ public class CarControllerTest : IClassFixture<SqlServerFixture>
                                 "TestAuthScheme", _ => { });
                     });
                 }).CreateClient();
-        
-        sqlServerFixture.ClearDatabaseAsync().Wait();
     }
 
     [Fact]
@@ -185,7 +184,7 @@ public class CarControllerTest : IClassFixture<SqlServerFixture>
         TestAuthenticationHeader.SetTestAuthHeader(_client, _fixture.Create<Guid>(), UserRole.Admin);
 
         // Act
-        var response = await _client.PutAsJsonAsync($"{BaseUrl}/{car.Id}", updateRequest);
+        var response = await _client.PatchAsJsonAsync($"{BaseUrl}/{car.Id}", updateRequest);
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -200,9 +199,16 @@ public class CarControllerTest : IClassFixture<SqlServerFixture>
         TestAuthenticationHeader.SetTestAuthHeader(_client, _fixture.Create<Guid>(), UserRole.Admin);
 
         // Act
-        var response = await _client.PutAsJsonAsync($"{BaseUrl}/{carId}", updateRequest);
+        var response = await _client.PatchAsJsonAsync($"{BaseUrl}/{carId}", updateRequest);
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+    }
+    
+    public Task InitializeAsync() => Task.CompletedTask;
+
+    public async Task DisposeAsync()
+    {
+        await DatabaseCleaner.ClearDatabaseAsync(_factory);
     }
 }

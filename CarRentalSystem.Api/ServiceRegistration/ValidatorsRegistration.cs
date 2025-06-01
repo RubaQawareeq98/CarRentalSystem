@@ -16,12 +16,12 @@ public static class ValidatorsRegistration
     public static void RegisterValidators(this IServiceCollection services)
     {
         services.AddFluentValidationAutoValidation();
-        
-        services.AddScoped<IValidator<SignupRequestBodyDto>, SignupRequestBodyValidator>();
-        services.AddScoped<IValidator<CarRequestDto>, CarRequestBodyValidator>();
-        services.AddScoped<IValidator<AddReservationBodyDto>, AddReservationBodyValidator>();
-        services.AddScoped<IValidator<LoginRequestBodyDto>, LoginRequestBodyValidator>();
-        services.AddScoped<IValidator<ForgotPasswordDto>, ForgotPasswordValidator>();
-        services.AddScoped<IValidator<ResetPasswordDto>, ResetPasswordDtoValidator>();
+
+        services.AddSingleton<IValidator<SignupRequestBodyDto>, SignupRequestBodyValidator>();
+        services.AddSingleton<IValidator<CarRequestDto>, CarRequestBodyValidator>();
+        services.AddSingleton<IValidator<AddReservationBodyDto>, AddReservationBodyValidator>();
+        services.AddSingleton<IValidator<LoginRequestBodyDto>, LoginRequestBodyValidator>();
+        services.AddSingleton<IValidator<ForgotPasswordDto>, ForgotPasswordValidator>();
+        services.AddSingleton<IValidator<ResetPasswordDto>, ResetPasswordDtoValidator>();
     }
 }

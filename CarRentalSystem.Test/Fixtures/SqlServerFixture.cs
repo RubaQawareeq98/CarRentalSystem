@@ -83,17 +83,4 @@ public class SqlServerFixture : IAsyncLifetime
             await _dbContainer.DisposeAsync();
         }
     }
-    
-    public async Task ClearDatabaseAsync()
-    {
-        using var scope = Factory.Services.CreateScope();
-        var db = scope.ServiceProvider.GetRequiredService<CarRentalSystemDbContext>();
-
-        var tableNames = new[] { "Reservations", "Users", "Cars" };
-
-        foreach (var table in tableNames)
-        {
-            await db.Database.ExecuteSqlRawAsync($"DELETE FROM [{table}];");
-        }
-    }
 }

@@ -1,6 +1,5 @@
 using CarRentalSystem.Api.Services;
 using CarRentalSystem.Api.Services.Interfaces;
-using CarRentalSystem.Db;
 using CarRentalSystem.Db.Repositories;
 using CarRentalSystem.Db.Repositories.Interfaces;
 
@@ -10,7 +9,6 @@ public static class RepositoriesRegistration
 {
     public static void RegisterServices(this IServiceCollection services)
     {
-        services.AddDbContext<CarRentalSystemDbContext>();
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IJwtTokenGeneratorService, JwtTokenGeneratorService>();
         services.AddScoped<ICarRepository, CarRepository>();
