@@ -9,7 +9,7 @@ public class CarRentalSystemDbContextFactory : IDesignTimeDbContextFactory<CarRe
 {
     public CarRentalSystemDbContext CreateDbContext(string[] args)
     {
-        var basePath = Path.Combine(Directory.GetCurrentDirectory(), "../CarRentalSystem");
+        var basePath = Path.Combine(Directory.GetCurrentDirectory(), "../CarRentalSystem.Api");
 
         var configuration = new ConfigurationBuilder()
             .SetBasePath(basePath)
