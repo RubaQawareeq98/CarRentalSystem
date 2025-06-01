@@ -9,7 +9,9 @@ public class AddReservationBodyValidator : AbstractValidator<AddReservationBodyD
     {
         RuleFor(x => x.CarId)
             .NotEmpty()
-            .WithMessage("Car Id cannot be empty");
+            .WithMessage("Car Id cannot be empty")
+            .WithErrorCode("CAR_ID_EMPTY")
+            .WithSeverity(Severity.Error);
         
         RuleFor(x => x.StartDate)
             .NotEmpty()
@@ -21,6 +23,8 @@ public class AddReservationBodyValidator : AbstractValidator<AddReservationBodyD
         
         RuleFor(x => x.UserId)
             .NotEmpty()
-            .WithMessage("User Id cannot be empty");
+            .WithMessage("User Id cannot be empty")
+            .WithErrorCode("USER_ID_EMPTY")
+            .WithSeverity(Severity.Error);
     }
 }

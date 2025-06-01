@@ -30,13 +30,15 @@ public class EmailService(
         var htmlContent =  emailMessageService.GenerateResetPasswordEmail(user.Email, resetLink);
 
         var apiInstance = new TransactionalEmailsApi();
-        var sender = new SendSmtpEmailSender(_brevoSettings.SenderName, _brevoSettings.SenderEmail);
+        
+        var emailSender = new SendSmtpEmailSender(_brevoSettings.SenderName, _brevoSettings.SenderEmail);
 
-        var receiver = new SendSmtpEmailTo(user.Email, user.FirstName);
-        var to = new List<SendSmtpEmailTo> { receiver };
+        var emailReceiver = new SendSmtpEmailTo(user.Email, user.FirstName);
+        
+        var receiversList = new List<SendSmtpEmailTo> { emailReceiver };
         try
         {
-            var sendSmtpEmail = new SendSmtpEmail(sender, to, null, null, htmlContent, null, "Reset Password.");
+            var sendSmtpEmail = new SendSmtpEmail(emailSender, receiversList, null, null, htmlContent, null, "Reset Password.");
             
             await apiInstance.SendTransacEmailAsync(sendSmtpEmail);
 
