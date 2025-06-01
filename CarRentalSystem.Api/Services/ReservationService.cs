@@ -19,7 +19,7 @@ public class ReservationService(
         if (!isCarAvailable)
             return false;
 
-        var reservation = mapper.ToReservation(bodyDto);
+        var reservation = mapper.MapAddReservationRequestToReservation(bodyDto);
         await reservationRepository.AddReservationAsync(reservation);
         return true;
     }
