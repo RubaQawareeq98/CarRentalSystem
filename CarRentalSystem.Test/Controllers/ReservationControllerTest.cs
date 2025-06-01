@@ -67,7 +67,7 @@ public class ReservationControllerTest : IClassFixture<SqlServerFixture>
         var response = await _client.PostAsJsonAsync(BaseUrl, reservationDto);
 
         // Assert
-        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        response.StatusCode.Should().Be(HttpStatusCode.Created);
     }
 
     [Fact]
@@ -142,7 +142,7 @@ public class ReservationControllerTest : IClassFixture<SqlServerFixture>
         TestAuthenticationHeader.SetTestAuthHeader(_client, user.Id, UserRole.Customer);
 
         // Act
-       var response = await _client.PutAsJsonAsync($"{BaseUrl}/reservation/{reservation.Id}", updateDto);
+       var response = await _client.PutAsJsonAsync($"{BaseUrl}/{reservation.Id}", updateDto);
 
         // Assert
        response.StatusCode.Should().Be(HttpStatusCode.NoContent);

@@ -185,7 +185,7 @@ public class CarControllerTest : IClassFixture<SqlServerFixture>
         TestAuthenticationHeader.SetTestAuthHeader(_client, _fixture.Create<Guid>(), UserRole.Admin);
 
         // Act
-        var response = await _client.PutAsJsonAsync($"{BaseUrl}/{car.Id}", updateRequest);
+        var response = await _client.PatchAsJsonAsync($"{BaseUrl}/{car.Id}", updateRequest);
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -200,7 +200,7 @@ public class CarControllerTest : IClassFixture<SqlServerFixture>
         TestAuthenticationHeader.SetTestAuthHeader(_client, _fixture.Create<Guid>(), UserRole.Admin);
 
         // Act
-        var response = await _client.PutAsJsonAsync($"{BaseUrl}/{carId}", updateRequest);
+        var response = await _client.PatchAsJsonAsync($"{BaseUrl}/{carId}", updateRequest);
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
