@@ -15,17 +15,19 @@ public class ReservationController(IReservationService reservationService) : Con
     public async Task<ActionResult> AddReservation([FromBody] AddReservationBodyDto bodyDto)
     {
         var isSuccess = await reservationService.AddReservationAsync(bodyDto);
-        return isSuccess ? Ok("Reservation Added Successfully"): BadRequest("Reservation Added Failed");
+        return isSuccess
+            ? CreatedAtAction(nameof(GetUserReservations), new { userId = bodyDto.UserId }, null)
+            : BadRequest("Failed to add reservation");
     }
     
     [HttpGet("user/{userId}")]
-    public async Task<ActionResult<List<ReservationResponseDto>>> GetUserReservations(Guid userId,[FromQuery] SieveModel sieveModel)
+    public async Task<ActionResult<List<ReservationResponseDto>>> GetUserReservations(Guid userId, [FromQuery] SieveModel sieveModel)
     {
         var reservations = await reservationService.GetUserReservationsAsync(userId, sieveModel);
         return Ok(reservations);
     }
 
-    [HttpPut("reservation/{reservationId}")]
+    [HttpPut("{reservationId}")]
     public async Task<ActionResult> UpdateReservation(Guid reservationId, UpdateReservationDto dto)
     {
         var isSuccess = await reservationService.UpdateReservationAsync(reservationId, dto);
