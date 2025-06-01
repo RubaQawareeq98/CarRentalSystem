@@ -43,14 +43,13 @@ public class CarRepository(CarRentalSystemDbContext context, ISieveProcessor sie
 
     public async Task<bool> IsCarAvailable(Guid carId, DateTime startDate, DateTime endDate)
     {
-        return await context.Cars
-            .Where(c => c.Id == carId)
-            .AnyAsync(c => c.IsAvailable && 
-                           !c.Reservations.Any(r => 
-                               (startDate >= r.StartDate && startDate <= r.EndDate) ||  
-                               (endDate >= r.StartDate && endDate <= r.EndDate) ||      
-                               (r.StartDate >= startDate && r.StartDate <= endDate))); 
+        var car = await context.Cars
+            .Include(c => c.Reservations) 
+            .FirstOrDefaultAsync(c => c.Id == carId);
+
+        return car is not null && IsCarAvailable(car, startDate, endDate);
     }
+
 
     public async Task AddCarAsync(Car car)
     {
@@ -72,5 +71,12 @@ public class CarRepository(CarRentalSystemDbContext context, ISieveProcessor sie
     public async Task<Car> GetCarById(Guid id)
     {
         return await context.Cars.FirstAsync(c => c.Id == id);
+    }
+    
+    private static bool IsCarAvailable(Car car, DateTime startDate, DateTime endDate)
+    {
+        return car is { IsAvailable: true, Reservations: not null } &&
+               !car.Reservations.Any(r =>
+                   startDate < r.EndDate && endDate > r.StartDate);
     }
 }
