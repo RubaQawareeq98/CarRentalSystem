@@ -51,13 +51,13 @@ public class CarRepository(CarRentalSystemDbContext context, ISieveProcessor sie
     }
 
 
-    public async Task AddCarAsync(Car car)
+    public async Task AddCarAsync(Car? car)
     {
         await context.Cars.AddAsync(car);
         await context.SaveChangesAsync();
     }
 
-    public async Task UpdateCarAsync(Car car)
+    public async Task UpdateCarAsync(Car? car)
     {
         context.Cars.Update(car);
         await context.SaveChangesAsync();
@@ -68,9 +68,9 @@ public class CarRepository(CarRentalSystemDbContext context, ISieveProcessor sie
         return await context.Cars.AnyAsync(c => c.Id == carId);
     }
 
-    public async Task<Car> GetCarById(Guid id)
+    public async Task<Car?> GetCarById(Guid id)
     {
-        return await context.Cars.FirstAsync(c => c.Id == id);
+        return await context.Cars.FirstOrDefaultAsync(c => c.Id == id);
     }
     
     private static bool IsCarAvailableInDateRange(Car car, DateTime startDate, DateTime endDate)

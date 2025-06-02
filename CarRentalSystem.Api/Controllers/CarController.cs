@@ -73,11 +73,9 @@ public class CarController(
 
     [Authorize(Roles = "Admin")]
     [HttpPatch("{carId}")]
-    public async Task<ActionResult> UpdateCar(Guid carId,[FromBody] CarRequestDto carRequestDto)
+    public async Task<ActionResult> UpdateCar(Guid carId,[FromBody] UpdateCarRequestDto updateCarBody)
     {
-        var car = carRequestMapper.ToCar(carRequestDto);
-        car.Id = carId;
-        var isSuccess = await carService.UpdateCarAsync(car);
+        var isSuccess = await carService.UpdateCarAsync(carId, updateCarBody);
         
         return isSuccess? Ok("Car updated successfully") : NotFound();
     }
