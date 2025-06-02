@@ -180,7 +180,7 @@ public class CarControllerTest : IClassFixture<SqlServerFixture>, IAsyncLifetime
         
         await CarTestUtilities.AddTestCars([car], _factory);
 
-        var updateRequest = _fixture.Create<CarRequestDto>();
+        var updateRequest = _fixture.Create<UpdateCarRequestDto>();
         TestAuthenticationHeader.SetTestAuthHeader(_client, _fixture.Create<Guid>(), UserRole.Admin);
 
         // Act
