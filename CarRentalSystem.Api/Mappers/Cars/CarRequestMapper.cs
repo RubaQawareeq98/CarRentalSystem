@@ -7,5 +7,5 @@ namespace CarRentalSystem.Api.Mappers.Cars;
 [Mapper]
 public partial class CarRequestMapper
 {
-    public partial Car ToCar(CarRequestDto carRequestDto);
+    public partial Car? ToCar(CarRequestDto carRequestDto);
 }
