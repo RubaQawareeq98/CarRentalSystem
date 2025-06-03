@@ -12,6 +12,6 @@ public interface ICarService
     Task<List<Car>> SearchCarsAsync(CarSearchDto carSearchDto);
     Task<bool> IsCarAvailableAsync(Guid carId, DateTime startDate, DateTime endDate);
     Task AddCarAsync(Car? car);
-    Task<bool> UpdateCarAsync(Guid carId, UpdateCarRequestDto updateCarRequestDto);
+    Task<bool> UpdateCarAsync(Car car);
     Task<bool> IsCarExistsAsync(Guid carId);
 }

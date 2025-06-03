@@ -16,6 +16,5 @@ public static class MappersRegistration
         services.AddSingleton<AddReservationMapper>();     
         services.AddSingleton<CarRequestMapper>();     
         services.AddSingleton<UpdateReservationMapper>();     
-        services.AddSingleton<UpdateCarMapper>();     
     }
 }

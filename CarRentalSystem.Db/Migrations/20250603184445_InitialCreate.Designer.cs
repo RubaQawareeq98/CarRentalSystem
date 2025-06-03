@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CarRentalSystem.Db.Migrations
 {
     [DbContext(typeof(CarRentalSystemDbContext))]
-    [Migration("20250526184729_UpdateDb")]
-    partial class UpdateDb
+    [Migration("20250603184445_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

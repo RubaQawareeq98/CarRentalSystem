@@ -1,5 +1,3 @@
-using CarRentalSystem.Api.Mappers.Cars;
-using CarRentalSystem.Api.Models.Cars;
 using CarRentalSystem.Api.Services.Interfaces;
 using CarRentalSystem.Db.Models;
 using CarRentalSystem.Db.Repositories.Interfaces;
@@ -7,7 +5,7 @@ using Sieve.Models;
 
 namespace CarRentalSystem.Api.Services;
 
-public class CarService(ICarRepository carRepository, UpdateCarMapper updateCarMapper) : ICarService
+public class CarService(ICarRepository carRepository) : ICarService
 {
     public async Task<List<Car>> GetAllCarsAsync(SieveModel sieveModel)
     {
@@ -45,16 +43,8 @@ public class CarService(ICarRepository carRepository, UpdateCarMapper updateCarM
          await carRepository.AddCarAsync(car);
     }
 
-    public async Task<bool> UpdateCarAsync(Guid carId, UpdateCarRequestDto updateCarRequestDto)
+    public async Task<bool> UpdateCarAsync(Car car)
     {
-        var car = await carRepository.GetCarById(carId);
-        if (car is null)
-        {
-            return false;
-        }
-
-        updateCarMapper.MapUpdateCarBodyToCar(updateCarRequestDto, car);
-       
         await carRepository.UpdateCarAsync(car);
         return true;
     }

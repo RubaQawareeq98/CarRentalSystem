@@ -3,6 +3,7 @@ using CarRentalSystem.Api.Models.Cars;
 using CarRentalSystem.Api.Services.Interfaces;
 using CarRentalSystem.Db.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Sieve.Models;
 
@@ -73,10 +74,19 @@ public class CarController(
 
     [Authorize(Roles = "Admin")]
     [HttpPatch("{carId}")]
-    public async Task<ActionResult> UpdateCar(Guid carId,[FromBody] UpdateCarRequestDto updateCarBody)
+    public async Task<ActionResult> UpdateCar(Guid carId, [FromBody] JsonPatchDocument<Car> patchDoc)
     {
-        var isSuccess = await carService.UpdateCarAsync(carId, updateCarBody);
-        
-        return isSuccess? Ok("Car updated successfully") : NotFound();
+
+        var car = await carService.GetCarByIdAsync(carId);
+        if (car is null)
+            return NotFound();
+
+        patchDoc.ApplyTo(car, ModelState);
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+
+        var isSuccess = await carService.UpdateCarAsync(car);
+
+        return isSuccess ? Ok("Car updated successfully") : StatusCode(500, "Update failed");
     }
 }
