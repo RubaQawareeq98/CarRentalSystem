@@ -6,14 +6,17 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.Testing;
 using System.Net;
 using System.Net.Http.Json;
+using System.Text;
 using CarRentalSystem.Api;
 using CarRentalSystem.Db.Enums;
 using CarRentalSystem.Test.Handlers;
 using CarRentalSystem.Test.Helpers;
 using CarRentalSystem.Test.Shared;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
 
 namespace CarRentalSystem.Test.Controllers;
 
@@ -179,31 +182,40 @@ public class CarControllerTest : IClassFixture<SqlServerFixture>, IAsyncLifetime
             .Create();
         
         await CarTestUtilities.AddTestCars([car], _factory);
+        var updatedModel = _fixture.Create<string>();
+        var patchDoc = new JsonPatchDocument<Car>();
+        patchDoc.Replace(c => c.Model, updatedModel);
 
-        var updateRequest = _fixture.Create<UpdateCarRequestDto>();
-        TestAuthenticationHeader.SetTestAuthHeader(_client, _fixture.Create<Guid>(), UserRole.Admin);
+        var serializedPatchDoc = JsonConvert.SerializeObject(patchDoc);
+        var content = new StringContent(serializedPatchDoc, Encoding.UTF8, "application/json-patch+json");        TestAuthenticationHeader.SetTestAuthHeader(_client, _fixture.Create<Guid>(), UserRole.Admin);
 
         // Act
-        var response = await _client.PatchAsJsonAsync($"{BaseUrl}/{car.Id}", updateRequest);
-
+        var response = await _client.PatchAsync($"{BaseUrl}/{car.Id}", content);
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
     }
 
     [Fact]
-    public async Task UpdateCar_InvalidCarId_ShouldReturnsNotFound()
+    public async Task UpdateCar_InvalidCarId_ShouldReturnNotFound()
     {
         // Arrange
-        var carId = _fixture.Create<Guid>();
-        var updateRequest = _fixture.Create<CarRequestDto>();
+        var invalidCarId = _fixture.Create<Guid>();
+        var updatedModel = _fixture.Create<string>();
+        var patchDoc = new JsonPatchDocument<Car>();
+        patchDoc.Replace(c => c.Model, updatedModel);
+
+        var serializedPatch = JsonConvert.SerializeObject(patchDoc);
+        var content = new StringContent(serializedPatch, Encoding.UTF8, "application/json-patch+json");
+
         TestAuthenticationHeader.SetTestAuthHeader(_client, _fixture.Create<Guid>(), UserRole.Admin);
 
         // Act
-        var response = await _client.PatchAsJsonAsync($"{BaseUrl}/{carId}", updateRequest);
+        var response = await _client.PatchAsync($"{BaseUrl}/{invalidCarId}", content);
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
+
     
     public Task InitializeAsync() => Task.CompletedTask;
 
