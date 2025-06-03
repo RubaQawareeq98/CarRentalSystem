@@ -89,5 +89,4 @@ public class CarController(
 
         return isSuccess ? Ok("Car updated successfully") : StatusCode(500, "Update failed");
     }
-
 }

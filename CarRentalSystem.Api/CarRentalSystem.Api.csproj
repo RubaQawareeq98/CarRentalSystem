@@ -33,4 +33,12 @@
       <ProjectReference Include="..\CarRentalSystem.Db\CarRentalSystem.Db.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Content Include="..\.dockerignore">
+        <Link>.dockerignore</Link>
+      </Content>
+    </ItemGroup>
+
 </Project>
+
+    

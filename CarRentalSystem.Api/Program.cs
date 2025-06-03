@@ -1,9 +1,12 @@
+using CarRentalSystem.Api.Configurations;
 using CarRentalSystem.Api.Middlewares;
 using CarRentalSystem.Api.ServiceRegistration;
 using CarRentalSystem.Db;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 using Sieve.Models;
 using Sieve.Services;
+
 
 namespace CarRentalSystem.Api;
 
@@ -13,24 +16,46 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
-        // Add services to the container.
+// Add services to the container.
 
         builder.Services.RegisterServices();
         builder.Services.AddControllers()
             .AddNewtonsoftJson();
-        
+            
         builder.RegisterJwtParams();
         builder.RegisterBrevoOptions();
         builder.Services.RegisterMappers();
         builder.Services.RegisterValidators();
         builder.Services.RegisterContexts();
 
-        // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+        var elasticSearchConfig = builder.Configuration
+            .GetSection("ElasticSearch")
+            .Get<ElasticSearchConfigurations>();
+
+
+        if (elasticSearchConfig != null)
+        {
+            var logger = LoggerRegistration.RegisterLogger(elasticSearchConfig);
+
+            Log.Logger = logger;
+        }
+
+        builder.Host.UseSerilog();
+        
+        builder.Services.Configure<SieveOptions>(builder.Configuration.GetSection("Sieve"));
+        builder.Services.AddScoped<ISieveProcessor, SieveProcessor>();
+
+
+// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
         builder.Services.AddOpenApi();
 
-        builder.Services.AddDbContext<CarRentalSystemDbContext>(options =>
-            options.UseSqlServer(builder.Configuration.GetConnectionString("SqlConnectionString")));
-
+        builder.Services.AddDbContext<CarRentalSystemDbContext>(
+            options =>
+                options.UseSqlServer(
+                    builder.Configuration.GetConnectionString("SqlConnectionString"),
+                    sqlOptions => sqlOptions.EnableRetryOnFailure()
+                )
+        );
         builder.Services.AddSwaggerGen();
 
 
@@ -40,7 +65,8 @@ public class Program
 
         var app = builder.Build();
 
-        // Configure the HTTP request pipeline.
+
+// Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
         {
             app.MapOpenApi();
@@ -56,6 +82,7 @@ public class Program
         app.MapControllers();
 
         app.UseMiddleware<ExceptionHandlingMiddleware>();
+
         await app.RunAsync();
     }
 }
