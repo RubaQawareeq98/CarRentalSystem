@@ -5,48 +5,57 @@ using Microsoft.EntityFrameworkCore;
 using Sieve.Models;
 using Sieve.Services;
 
-var builder = WebApplication.CreateBuilder(args);
+namespace CarRentalSystem.Api;
 
-// Add services to the container.
-
-builder.Services.RegisterServices();
-builder.Services.AddControllers()
-    .AddNewtonsoftJson();
-builder.RegisterJwtParams();
-builder.RegisterBrevoOptions();
-builder.Services.RegisterMappers();
-builder.Services.RegisterValidators();
-builder.Services.RegisterContexts();
-
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
-
-builder.Services.AddDbContext<CarRentalSystemDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("SqlConnectionString")));
-
-builder.Services.AddSwaggerGen();
-
-
-
-builder.Services.Configure<SieveOptions>(builder.Configuration.GetSection("Sieve"));
-builder.Services.AddScoped<ISieveProcessor, SieveProcessor>();
-
-var app = builder.Build();
-
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+public class Program
 {
-    app.MapOpenApi();
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    public static async Task Main(string[] args)
+    {
+        var builder = WebApplication.CreateBuilder(args);
+
+        // Add services to the container.
+
+        builder.Services.RegisterServices();
+        builder.Services.AddControllers()
+            .AddNewtonsoftJson();
+        
+        builder.RegisterJwtParams();
+        builder.RegisterBrevoOptions();
+        builder.Services.RegisterMappers();
+        builder.Services.RegisterValidators();
+        builder.Services.RegisterContexts();
+
+        // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+        builder.Services.AddOpenApi();
+
+        builder.Services.AddDbContext<CarRentalSystemDbContext>(options =>
+            options.UseSqlServer(builder.Configuration.GetConnectionString("SqlConnectionString")));
+
+        builder.Services.AddSwaggerGen();
+
+
+
+        builder.Services.Configure<SieveOptions>(builder.Configuration.GetSection("Sieve"));
+        builder.Services.AddScoped<ISieveProcessor, SieveProcessor>();
+
+        var app = builder.Build();
+
+        // Configure the HTTP request pipeline.
+        if (app.Environment.IsDevelopment())
+        {
+            app.MapOpenApi();
+            app.UseSwagger();
+            app.UseSwaggerUI();
+        }
+
+        app.UseHttpsRedirection();
+
+        app.UseAuthentication();
+        app.UseAuthorization();
+
+        app.MapControllers();
+
+        app.UseMiddleware<ExceptionHandlingMiddleware>();
+        await app.RunAsync();
+    }
 }
-
-app.UseHttpsRedirection();
-
-app.UseAuthentication();
-app.UseAuthorization();
-
-app.MapControllers();
-
-app.UseMiddleware<ExceptionHandlingMiddleware>();
-await app.RunAsync();

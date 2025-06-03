@@ -29,7 +29,7 @@ public class UserController(IUserService userService,
         return Ok(userProfile);
     }
 
-    [HttpPut("{userId}")]
+    [HttpPut("profile/{userId}")]
     public async Task<ActionResult> UpdateProfile(Guid userId, UpdateProfileBodyDto bodyDto)
     {
         var user = await userService.GetUserByIdAsync(userId);
@@ -38,7 +38,7 @@ public class UserController(IUserService userService,
             return NotFound();
         }
 
-        user = mapper.UpdateUser(bodyDto);
+        mapper.UpdateUser(bodyDto, user);
         await userService.UpdateUserAsync(user);
         return Ok("Date updated successfully");
     }
