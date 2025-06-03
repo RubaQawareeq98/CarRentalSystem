@@ -1,5 +1,8 @@
+using System.Data;
+using CarRentalSystem.Db.Helpers;
 using CarRentalSystem.Db.Models;
 using CarRentalSystem.Db.Repositories.Interfaces;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Sieve.Models;
 using Sieve.Services;
@@ -34,11 +37,17 @@ public class CarRepository(CarRentalSystemDbContext context, ISieveProcessor sie
 
     public async Task<List<Car>> GetFilteredCarsAsync(CarSearchDto carSearchDto)
     {
-        var cars = context.Cars.AsQueryable();
+        var criteriaTable = SearchDataTableHelper.CreateSearchCriteriaDataTable(carSearchDto);
 
-        cars = sieveProcessor.Apply(carSearchDto, cars);
-
-        return await cars.ToListAsync();
+        var searchCriteriaParam = new SqlParameter("@SearchCriteria", criteriaTable)
+        {
+            TypeName = "dbo.CarSearchCriteria",
+            SqlDbType = SqlDbType.Structured
+        };
+        return await context.Cars
+            .FromSqlRaw("EXEC sp_SearchCars @SearchCriteria", searchCriteriaParam)
+            .AsNoTracking()
+            .ToListAsync();
     }
 
     public async Task<bool> IsCarAvailable(Guid carId, DateTime startDate, DateTime endDate)
