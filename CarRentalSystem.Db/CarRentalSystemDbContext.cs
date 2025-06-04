@@ -5,9 +5,10 @@ namespace CarRentalSystem.Db;
 
 public class CarRentalSystemDbContext (DbContextOptions<CarRentalSystemDbContext> options) : DbContext(options)
 {
-    DbSet<Car> Cars { get; set; }
+    public DbSet<Car?> Cars { get; set; }
     public DbSet<User> Users { get; set; }
-    DbSet<Reservation> Reservations { get; set; }
+    public DbSet<Reservation?> Reservations { get; set; }
+    public DbSet<PasswordResetToken?> PasswordResetTokens { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
